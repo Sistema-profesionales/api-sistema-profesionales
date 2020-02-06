@@ -56,8 +56,29 @@ const getById = async (id) => {
     }
 }
 
+const remove = async (id) => {
+    const connection = await connecting();
+
+    try {
+        const query = `DELETE
+                       FROM users
+                       WHERE id = $1
+                       RETURNING *`;
+        
+        const result = await connection.query(query, [id]);
+
+        return result.rows[0];
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
+
+}
+
 module.exports = {
     save,
     getAll,
-    getById
+    getById,
+    remove
 }
