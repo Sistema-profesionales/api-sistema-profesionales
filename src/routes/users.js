@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const userModel = require('../models/Usuario');
+const userModel = require('../models/User');
+
+
+router.get('/', async (req,res) => {
+
+});
 
 router.post('/create', async (req, res) => {
     try {
-        const { body : usuario } = req;
+        const { body : user } = req;
 
-        const newUser = await userModel.save(usuario);
+        const newUser = await userModel.save(user);
         res.status(201).send(newUser);
     } catch (error) {
         res.status(500).send(error);

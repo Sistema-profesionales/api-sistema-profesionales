@@ -1,11 +1,15 @@
+require('dotenv').config()
+
 const { Pool } = require("pg");
 
+
 const pool = new Pool({
-    user : "mpquvspq",
-    host : "rajje.db.elephantsql.com",
-    database : "mpquvspq",
-    password : "kITRAwcEU1r0zj7AmhqQ5YA1qFCLCD2B"
+    user : process.env.USER_DATABASE,
+    host : process.env.HOST_DATABASE,
+    database : process.env.DATABASE_NAME,
+    password : process.env.PASSWORD_DATABASE
 });
+
 
 const connecting = async () => {
     const client = await pool.connect();
