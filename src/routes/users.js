@@ -48,6 +48,17 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
+});
+
+router.put('/:id', async (req,res) => {
+    try {
+        const id = parseInt(req.params.id);
+
+        const userUpdated = await userModel.updateById(id);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 })
+
 
 module.exports = router;
