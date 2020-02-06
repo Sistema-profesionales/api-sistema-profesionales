@@ -13,6 +13,19 @@ router.get('/', async (req,res) => {
     }
 });
 
+router.get('/:id', async (req,res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const user = await userModel.getById(id);
+
+        if(!user) return res.status(404).send({ "user": [`El usuario con id ${id} no existe`] });
+
+        res.status(200).send(user);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
+
 router.post('/', async (req, res) => {
     try {
         const { body : user } = req;
@@ -22,7 +35,6 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-
 });
 
 module.exports = router;
