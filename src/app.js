@@ -12,6 +12,6 @@ app.use(express.json());
 app.use(require('./routes'));
 
 //run server passion rules the game
-app.listen(app.get('port'), () => {
+app.listen( process.env.PORT || 3000, () => {
     console.log(`server running on port ${app.get('port')}`);
 })
