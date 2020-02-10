@@ -53,8 +53,13 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req,res) => {
     try {
         const id = parseInt(req.params.id);
+        const { body : user} = req;
 
-        const userUpdated = await userModel.updateById(id);
+        const userToUpdate = await userModel.getById(id);
+
+        if( !userToUpdate) return res.status(404).send({"user": [`El usuario con id ${id} no existe`]})
+        
+
     } catch (error) {
         res.status(500).send(error);
     }
