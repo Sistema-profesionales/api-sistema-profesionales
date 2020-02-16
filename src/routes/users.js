@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userModel = require('../models/User');
-
+const validatorUser = require('../helpers/validators/user');
 
 router.get('/', async (req,res) => {
     try {
@@ -28,10 +28,11 @@ router.get('/:id', async (req,res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { body : user } = req;
+        const { body } = req;
 
-        const newUser = await userModel.save(user);
-        res.status(201).send(newUser);
+        const newUser = await userModel.save(body);
+        res.send(newUser);
+        // res.status(201).send(newUser);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -50,20 +51,20 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req,res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const { body : user} = req;
+// router.put('/:id', async (req,res) => {
+//     try {
+//         const id = parseInt(req.params.id);
+//         const { body } = req;
 
-        const userToUpdate = await userModel.getById(id);
+//         const user = await userModel.getById(id);
 
-        if( !userToUpdate) return res.status(404).send({"user": [`El usuario con id ${id} no existe`]})
+//         if( !user) return res.status(404).send({"user": [`El usuario con id ${id} no existe`]});
         
 
-    } catch (error) {
-        res.status(500).send(error);
-    }
-})
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
 
 
 module.exports = router;

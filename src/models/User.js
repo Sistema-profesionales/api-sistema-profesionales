@@ -5,11 +5,11 @@ const save = async (user) => {
 
     try {
         const query = `INSERT INTO users 
-                      (rut,  names, lastnames, entity_id, commune_id, login, password, phone, email, profile_id)
-                      VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                      (rut,  names, lastnames, entity_id, commune_id, login, password, phone, email)
+                      VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
                       RETURNING *`;
 
-        const values = [user.rut, user.names, user.lastnames, user.entity_id, user.commune_id, user.login, user.password, user.phone, user.email, user.profile_id];
+        const values = [user.rut, user.names, user.lastnames, user.entity_id, user.commune_id, user.login, user.password, user.phone, user.email];
         const result = await connection.query(query, values);
         return result.rows[0];
     } catch (error) {
@@ -18,6 +18,7 @@ const save = async (user) => {
         connection.release();
     }
 }
+
 
 const getAll = async () => {
     const connection = await connecting();
@@ -76,9 +77,24 @@ const remove = async (id) => {
 
 }
 
+const updateById = async (id, user) => {
+    const connection = await connecting();
+
+    try {
+        const query = `UPDATE users
+                       SET `
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
+
+}
+
 module.exports = {
     save,
     getAll,
     getById,
-    remove
+    remove,
+    updateById
 }
