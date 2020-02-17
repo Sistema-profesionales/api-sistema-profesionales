@@ -31,16 +31,13 @@ router.post('/', async (req, res) => {
         const { body } = req;
         const errors = validatorUser.save(body);
 
-        console.log(errors);
-        res.send(errors);
+        if(errors){
+            res.status(400).send(errors);
+            return;
+        }
 
-        // if(errors){
-        //     res.status(400).send(errors);
-        //     return;
-        // }
-
-        // const newUser = await userModel.save(body);
-        // res.status(201).send(newUser);
+        const newUser = await userModel.save(body);
+        res.status(201).send(newUser);
     } catch (error) {
         res.status(500).send(error);
     }

@@ -6,8 +6,12 @@ const save = (user) => {
     const {rut} = user;
 
     //rut validations
-    if(rut.trim().length < 4 ){
+    if(!rut ){
         errors.rut.push("El rut es requerido");
+    }else{
+        if(rut.trim().length < 8 || rut.trim().length > 10){
+            errors.rut.push("El rut es requerido");
+        }
     }
 
     if(errors.rut.length > 0){
@@ -20,3 +24,4 @@ const save = (user) => {
 module.exports = {
     save
 }
+900000-7
