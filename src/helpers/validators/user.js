@@ -1,21 +1,22 @@
 const save = (user) => {
     const errors = {
-        rut: [],
-        names: [],
-        lastnames: [],
-        commune_id: [],
-        login: [],
-        password: [],
-        phone: [],
-        email: []
+        rut: []
     };
 
-    if(Object.keys(user).length === 0){
-        return { user: ["Se requieren datos"] };
+    const {rut} = user;
+
+    //rut validations
+    if(rut.trim().length < 4 ){
+        errors.rut.push("El rut es requerido");
     }
 
-    const {rut, names, lastnames, commune_id, login, password, phone, email} = user;
+    if(errors.rut.length > 0){
+        return errors;
+    }else{
+        return undefined;
+    }
+}
 
-
-    
+module.exports = {
+    save
 }

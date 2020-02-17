@@ -29,9 +29,17 @@ router.get('/:id', async (req,res) => {
 router.post('/', async (req, res) => {
     try {
         const { body } = req;
+        const errors = validatorUser.save(body);
 
-        const newUser = await userModel.save(body);
-        res.send(newUser);
+        console.log(errors);
+        res.send(errors);
+
+        // if(errors){
+        //     res.status(400).send(errors);
+        //     return;
+        // }
+
+        // const newUser = await userModel.save(body);
         // res.status(201).send(newUser);
     } catch (error) {
         res.status(500).send(error);
