@@ -5,6 +5,7 @@ const app = express();
 app.use('/v1/users', require('./users'));
 app.use('/v1/areas', require('./areas'));
 app.use('/v1/professions', require('./professions'));
+app.use('/v1/communes', require('./communes'));
 
 
 module.exports = app;
