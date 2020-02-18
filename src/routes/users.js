@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken')
 const userModel = require('../models/User');
 const validatorUser = require('../helpers/validators/user');
 
@@ -55,6 +56,29 @@ router.delete('/:id', async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+router.post('/login', async (req,res) => {
+    try {
+        const { login, password } = req.body;
+
+        const userLogin = await userModel.getByLogin(login);
+
+        if(userLogin){
+            if(password === userLogin.password){
+                res.status(200).send(userLogin);
+            }else{
+                res.status(400).send({'user': ['Usuario o contraseña incorrecto']});
+                return;
+            }
+        }else{
+            res.status(400).send({'user': ['Usuario no existe']});
+            return;
+        }
+
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
 
 // router.put('/:id', async (req,res) => {
 //     try {
