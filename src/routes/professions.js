@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const professionsModel = require('../models/Professions');
+const professionModel = require('../models/Profession');
 
 router.get('/', async (req,res) => {
     try {
-        const professions = await professionsModel.getAll();
+        const professions = await professionModel.getAll();
 
         res.status(200).send(professions);
     } catch (error) {
