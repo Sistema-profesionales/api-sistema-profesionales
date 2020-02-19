@@ -1,4 +1,5 @@
 const { connecting } = require('./connect');
+const { camel, ucamel } = require('../helpers/utils/utilitiesFuctions');
 
 const save = async (user) => {
     const connection = await connecting();
@@ -11,7 +12,8 @@ const save = async (user) => {
 
         const values = [user.rut, user.names, user.lastnames, user.entity_id, user.commune_id, user.login, user.password, user.phone, user.email];
         const result = await connection.query(query, values);
-        return result.rows[0];
+        
+        return result.rows[0] ;
     } catch (error) {
         throw { error };
     } finally {
@@ -30,7 +32,14 @@ const getAll = async () => {
         users
     `;
         const result = await connection.query(query);
-        return result.rows;
+        let rows = result.rows;
+
+        for(let i = 0; i < rows.length; i++){
+            delete rows[i].password;
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
 
     } catch (error) {
         throw { error };
@@ -48,7 +57,9 @@ const getById = async (id) => {
                        WHERE id = $1`;
 
         const result = await connection.query(query, [id]);
-        return result.rows[0];
+        let data = result.rows[0] || null;
+        if(data) delete data.password;
+        return data ? camel(data) : null;
 
     } catch (error) {
         throw { error };
