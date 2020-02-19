@@ -9,7 +9,14 @@ const getAll = async () => {
                        FROM communes`;
 
         const result = await connection.query(query);
-        return result.rows;
+        let rows = result.rows;
+
+        for (let i = 0; i < rows.length; i++){
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
+
     } catch (error) {
         throw { error };
     } finally {
@@ -26,7 +33,9 @@ const getById = async (id) => {
                        WHERE id = $1`;
 
         const result = await connection.query(query, [id]);
-        return result.rows;
+
+        let data = result.rows[0] || null;
+        return data ? camel(data) : null;
     } catch (error) {
         throw { error };
     } finally {
