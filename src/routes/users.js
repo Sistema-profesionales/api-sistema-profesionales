@@ -51,7 +51,7 @@ router.delete('/:id', async (req, res) => {
 
         if(!userDeleted) return res.status(404).send({"user": [`El usuario con id ${id} no existe`]});
 
-        res.status(200).send({"user": [`Se ha eliminado el usuario ${userDeleted.names}`]});
+        res.status(200).send(userDeleted);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -65,6 +65,7 @@ router.post('/login', async (req,res) => {
 
         if(userLogin){
             if(password === userLogin.password){
+                delete userLogin.password;
                 res.status(200).send(userLogin);
             }else{
                 res.status(400).send({'user': ['Usuario o contraseña incorrecto']});

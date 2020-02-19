@@ -1,5 +1,5 @@
 const { connecting } = require('./connect');
-const { camel, ucamel } = require('../helpers/utils/utilitiesFuctions');
+const { camel } = require('../helpers/utils/utilitiesFuctions');
 
 const save = async (user) => {
     const connection = await connecting();
@@ -13,7 +13,8 @@ const save = async (user) => {
         const values = [user.rut, user.names, user.lastnames, user.entity_id, user.commune_id, user.login, user.password, user.phone, user.email];
         const result = await connection.query(query, values);
         
-        return result.rows[0] ;
+        let data = result.rows[0];
+        return data ? camel(data) : null;
     } catch (error) {
         throw { error };
     } finally {
@@ -77,11 +78,13 @@ const getByLogin = async (login) => {
                        WHERE login = $1`;
 
         const result = await connection.query(query, [login]);
-        return result.rows[0];
+        let data = result.rows[0];
+
+        return data ? camel(data) : null;
     } catch (error) {
-
+        throw { error };
     } finally {
-
+        connection.release();
     }
 }
 
@@ -97,7 +100,9 @@ const remove = async (id) => {
 
         const result = await connection.query(query, [id]);
 
-        return result.rows[0];
+        let data = result.rows[0];
+
+        return data ? camel(data) : null;
     } catch (error) {
         throw { error };
     } finally {

@@ -1,13 +1,5 @@
-const data = [
-    {
-        "id": 1,
-        "nombre": "Educación"
-    },
-    {
-        "id": 2,
-        "nombre": "Salud"
-    },
-];
+const { connecting } = require('./connect');
+const { camel, ucamel } = require('../helpers/utils/utilitiesFuctions');
 
 const save = async (body) => {
     try {

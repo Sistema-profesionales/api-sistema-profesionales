@@ -1,4 +1,5 @@
 const { connecting } = require('./connect');
+const { camel, ucamel } = require('../helpers/utils/utilitiesFuctions');
 
 const getAll = async () => {
     const connection = await connecting();
