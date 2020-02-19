@@ -29,8 +29,7 @@ const getAll = async () => {
     try {
         const query = `
         SELECT *
-        FROM
-        users
+        FROM users
     `;
         const result = await connection.query(query);
         let rows = result.rows;

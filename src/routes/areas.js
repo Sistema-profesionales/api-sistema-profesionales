@@ -55,10 +55,11 @@ router.delete('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const areas = await areaModel.getAll();
-
+        
         res.status(200).send(areas);
+
     } catch (error) {
-        console.log(error);
+        res.status(500).send(error);
     }
 });
 
@@ -71,7 +72,17 @@ router.get('/:id', async (req, res) => {
 
         res.status(200).send(area);
     } catch (error) {
-        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.get('/:id/professions', async (req,res) =>{
+    try {
+        const id = req.params.id;
+        const professionsByAreaId = await areaModel.getProfessionsByAreaId(id);
+        res.status(200).send(professionsByAreaId);
+    } catch (error) {
+        res.status(500).send(error);
     }
 });
 
