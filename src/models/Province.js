@@ -58,9 +58,9 @@ const getCommunesByProvId = async (id) => {
         return rows;
     
     } catch (error) {
-    
+        throw { error }
     } finally {
-    
+        connection.release()
     }   
 }
 
