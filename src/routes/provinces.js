@@ -22,7 +22,13 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/:id/communes', async (req,res) => {
-
+    try {
+        const idProv = parseInt(req.params.id);
+        const communesByProvId = await provinceModel.getCommunesByProvId(idProv);
+        res.status(200).send(communesByProvId);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 });
 
 module.exports = router;

@@ -41,7 +41,31 @@ const getById = async (id) => {
     }
 }
 
+const getCommunesByProvId = async (id) => {
+    const connection = await connecting();
+    try {
+        const query = `SELECT *
+                       FROM communes
+                       WHERE province_id = $1`;
+
+        const result = await connection.query(query, [id]);
+        let rows = result.rows;
+
+        for(let i = 0; i < rows.length; i++){
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
+    
+    } catch (error) {
+    
+    } finally {
+    
+    }   
+}
+
 module.exports = {
     getAll,
-    getById
+    getById,
+    getCommunesByProvId
 }
