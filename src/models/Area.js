@@ -29,7 +29,7 @@ const getAll = async () => {
     } catch (error) {
         throw { error };
     } finally {
-        //close connection
+        connection.release();
     }
 }
 
