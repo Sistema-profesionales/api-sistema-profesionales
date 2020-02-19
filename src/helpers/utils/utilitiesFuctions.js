@@ -13,25 +13,11 @@ const camel = (el) => {
     return obj;
 }
 
-const ucamel = (el) => {
-    let obj = {};
-    for (let k in el) {
-        let arrKey = k.split('');
-        let name = '';
-        for (let i = 0; i < arrKey.length; ++i) {
-            name += (arrKey[i] < 'a') ? ('_' + arrKey[i].toLowerCase()) : arrKey[i];
-        }
-        if (el[k] && typeof el[k] === 'object') {
-            obj[name] = typeof el[k].length === 'undefined' ? ucamel(el[k]) : el[k];
-        } else {
-            obj[name] = el[k];
-        }
-    }
-    return obj;
-}
-
+const hasNumber = (myString) =>  {
+    return /\d/.test(myString);
+  }
 
 module.exports = {
     camel,
-    ucamel
+    hasNumber
 }
