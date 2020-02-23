@@ -30,12 +30,12 @@ router.get('/:id', async (req,res) => {
 router.post('/', async (req, res) => {
     try {
         const { body } = req;
-        // const errors = validatorUser.save(body);
+        const errors = validatorUser.save(body);
 
-        // if(errors){
-        //     res.status(400).send(errors);
-        //     return;
-        // }
+        if(errors){
+            res.status(400).send(errors);
+            return;
+        }
 
         const newUser = await userModel.save(body);
         if(body.professions){
