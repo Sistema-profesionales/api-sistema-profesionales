@@ -22,6 +22,23 @@ const save = async (user) => {
     }
 }
 
+const insertUserProfession = async (userId, professionId) => {
+    const connection = await connecting();
+
+    try {
+        const query = `INSERT INTO users_professions
+                       (user_id, profession_id)
+                       VALUES ($1, $2)`;
+
+        const values = [userId, professionId];
+        await connection.query(query, values);
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
+}
+
 
 const getAll = async () => {
     const connection = await connecting();
@@ -130,5 +147,6 @@ module.exports = {
     getById,
     getByLogin,
     remove,
-    updateById
+    updateById,
+    insertUserProfession
 }
