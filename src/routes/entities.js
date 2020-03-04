@@ -12,4 +12,14 @@ router.get('/', async (req,res) => {
     }
 });
 
+router.post('/', async (req,res) => {
+    try {
+        const { body } = req;
+
+        const newEntity = await entityModel.save(body);
+    } catch (error) {   
+        res.status(500).send(error);
+    }
+});
+
 module.exports = router;
