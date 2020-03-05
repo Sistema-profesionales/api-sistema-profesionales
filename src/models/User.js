@@ -4,13 +4,15 @@ const { camel } = require('../helpers/utils/utilitiesFuctions');
 const save = async (user) => {
     const connection = await connecting();
 
+    user = camel(user);
+
     try {
         const query = `INSERT INTO users 
                       (rut,  names, lastnames, entity_id, commune_id, login, password, phone, email)
                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
                       RETURNING *`;
 
-        const values = [user.rut, user.names, user.lastnames, user.entity_id, user.commune_id, user.login, user.password, user.phone, user.email];
+        const values = [user.rut, user.names, user.lastnames, user.entityId, user.communeId, user.login, user.password, user.phone, user.email];
         const result = await connection.query(query, values);
         
         let data = result.rows[0];
