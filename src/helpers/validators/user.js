@@ -2,10 +2,11 @@ const { hasNumber,validator } = require('../utils/utilitiesFuctions');
 const save = (user) => {
     const errors = {
         rut: [],
-        names: []
+        names: [],
+        lastnames: []
     };
 
-    let { rut, names } = user;
+    let { rut, names, lastnames } = user;
 
     //rut validations
     if (!rut) {
@@ -32,8 +33,21 @@ const save = (user) => {
         }
     }
 
+    if(!lastnames){
+        errors.names.push('El apellido es requerido');
+    }else{
+        if (lastnames.length < 5) {
+            errors.lastnames.push('Los apellidos debe contener mínimo 6 caracteres');
+        }
+
+        if(hasNumber(lastnames)){
+            errors.lastnames.push('Los apellidos no deben contener números');
+        }
+    }
+
     if (errors.rut.length > 0 ||
-        errors.names.length > 0) {
+        errors.names.length > 0 ||
+        errors.lastnames > 0 ) {
         return errors;
     } else {
         return undefined;
