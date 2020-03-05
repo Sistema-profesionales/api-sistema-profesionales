@@ -27,6 +27,10 @@ const getAll = async () => {
     }
 }
 
+const save = async () => {
+    
+}
+
 
 module.exports = {
     getAll
