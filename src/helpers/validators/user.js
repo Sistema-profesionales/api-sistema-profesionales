@@ -3,10 +3,11 @@ const save = (user) => {
     const errors = {
         rut: [],
         names: [],
-        lastnames: []
+        lastnames: [],
+        commune_id: []
     };
 
-    let { rut, names, lastnames } = user;
+    let { rut, names, lastnames, commune_id } = user;
 
     //rut validations
     if (!rut) {
@@ -33,11 +34,12 @@ const save = (user) => {
         }
     }
 
+    //lastnames validation
     if(!lastnames){
-        errors.names.push('El apellido es requerido');
+        errors.lastnames.push('El apellido es requerido');
     }else{
-        if (lastnames.length < 5) {
-            errors.lastnames.push('Los apellidos debe contener mínimo 6 caracteres');
+        if (lastnames.length < 3) {
+            errors.lastnames.push('Los apellidos debe contener mínimo 3 caracteres');
         }
 
         if(hasNumber(lastnames)){
@@ -45,9 +47,20 @@ const save = (user) => {
         }
     }
 
+    //commune id validation
+    if(!commune_id){
+        errors.commune_id.push("Comuna es requerida");
+    }
+    else{
+        if(!hasNumber(commune_id)){
+            errors.commune_id.push('Id de comuna debe ser valor numérico');
+        }
+    }
+
     if (errors.rut.length > 0 ||
         errors.names.length > 0 ||
-        errors.lastnames > 0 ) {
+        errors.lastnames.length > 0 ||
+        errors.commune_id.length > 0 ) {
         return errors;
     } else {
         return undefined;
