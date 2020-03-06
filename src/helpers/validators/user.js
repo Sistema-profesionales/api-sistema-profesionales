@@ -89,7 +89,7 @@ const save = (user) => {
     if(!email){
         errors.email.push("El email es requerido");
     }else{
-        if(!validateEmail(email)){
+        if(!validator.validateEmail(email)){
             errors.email.push("El email es inválido");
         }
     }
