@@ -17,6 +17,9 @@ router.post('/', async (req,res) => {
         const { body } = req;
 
         const newEntity = await entityModel.save(body);
+
+        res.status(201).send(newEntity);
+
     } catch (error) {   
         res.status(500).send(error);
     }

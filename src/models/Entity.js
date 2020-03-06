@@ -27,11 +27,33 @@ const getAll = async () => {
     }
 }
 
-const save = async () => {
-    
+const save = async (entity) => {
+    const connection = await connecting();
+
+    entity = camel(entity); 
+
+    try {
+        const query = `INSERT INTO entities
+                       (name, company_name, address, phone, email, area_id, commune_id)
+                       VALUES ($1, $2, $3, $4, $5, $6, $7)
+                       RETURNING *`;
+        
+        const values = [entity.name, entity.companyName, entity.address, entity.phone, entity.email, entity.areaId, entity.communeId];
+        const result = await connection.query(query, values);
+
+        let data = result.rows[0];
+        return data ? camel(data) : null;
+
+        
+    } catch (error) {
+        
+    } finally {
+        connection.release();
+    }
 }
 
 
 module.exports = {
-    getAll
+    getAll,
+    save
 }
