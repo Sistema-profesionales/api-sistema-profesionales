@@ -1,5 +1,9 @@
-const { hasNumber,validator } = require('../utils/utilitiesFuctions');
+const { hasNumber,validator, camel } = require('../utils/utilitiesFuctions');
+
 const save = (user) => {
+
+    user = camel(user);
+
     const errors = {
         rut: [],
         names: [],
@@ -10,7 +14,7 @@ const save = (user) => {
         email: []
     };
 
-    let { rut, names, lastnames, commune_id, login, phone, email } = user;
+    let { rut, names, lastnames, communeId, login, phone, email } = user;
 
     //rut validations
     if (!rut) {
@@ -51,11 +55,11 @@ const save = (user) => {
     }
 
     //commune id validation
-    if(!commune_id){
+    if(!communeId){
         errors.communeId.push("Comuna es requerida");
     }
     else{
-        if(!hasNumber(commune_id)){
+        if(!hasNumber(communeId)){
             errors.communeId.push('Id de comuna debe ser valor numérico');
         }
     }
