@@ -38,9 +38,15 @@ router.post('/', async (req, res) => {
         }
 
         //check if user exists
-        const userExist = await userModel.checkIfExist(body);
+        const userRut = await userModel.checkIfRutExist(body);
+        if(userRut) return res.status(409).send({"user": [`El rut ${body.rut} ya se encuentra registrado`]});
 
-        if(userExist) return res.status(409).send({"user": [`El usuario ya se encuentra registrado`]});
+        const userEmail = await userModel.checkIfEmailExist(body);
+        if(userEmail) return res.status(409).send({"user": [`El email ${body.email} ya se encuentra registrado`]});
+
+        const userLogin = await userModel.checkIfLoginlExist(body);
+        if(userLogin) return res.status(409).send({"user": [`El usuario con nickname ${body.login} ya se encuentra registrado`]});
+
 
         const newUser = await userModel.save(body);
         if(body.professions){

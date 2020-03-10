@@ -106,30 +106,66 @@ const getByLogin = async (login) => {
     }
 }
 
-const checkIfExist = async (user) => {
+const checkIfRutExist = async (user) => {
     const connection = await connecting();
-
     try {
         const query = `SELECT *
                        FROM users
-                       WHERE email = $1 OR rut = $2 OR login = $3`;
-        
-        const values = [user.email, user.rut, user.login];
+                       WHERE rut = $1`;
 
-        const result = await connection.query(query, values);
-
+        const result = await connection.query(query, [user.rut]);
         let data = result.rows[0];
 
         if(data){
             return true;
         }
-
     } catch (error) {
-        
+        throw {error}
     } finally {
-
+        connection.release();
     }
 }
+
+const checkIfEmailExist = async (user) => {
+    const connection = await connecting();
+    try {
+        const query = `SELECT *
+                       FROM users
+                       WHERE email = $1`;
+
+        const result = await connection.query(query, [user.email]);
+        let data = result.rows[0];
+
+        if(data){
+            return true;
+        }
+    } catch (error) {
+        throw {error}
+    } finally {
+        connection.release();
+    }
+}
+
+const checkIfLoginlExist = async (user) => {
+    const connection = await connecting();
+    try {
+        const query = `SELECT *
+                       FROM users
+                       WHERE login = $1`;
+
+        const result = await connection.query(query, [user.login]);
+        let data = result.rows[0];
+
+        if(data){
+            return true;
+        }
+    } catch (error) {
+        throw {error}
+    } finally {
+        connection.release();
+    }
+}
+checkIfLoginlExist
 
 
 const remove = async (id) => {
@@ -176,5 +212,7 @@ module.exports = {
     remove,
     updateById,
     insertUserProfession,
-    checkIfExist
+    checkIfRutExist,
+    checkIfEmailExist,
+    checkIfLoginlExist
 }
