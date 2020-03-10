@@ -16,9 +16,9 @@ const save = (user) => {
     if (!rut) {
         errors.rut.push("El rut es requerido");
     } else {
-        if (rut.trim().length < 8 || rut.trim().length > 10) {
-            errors.rut.push("El rut debe contener de 8 a 10 caracteres");
-        }
+        // if (rut.trim().length < 8 || rut.trim().length > 10) {
+        //     errors.rut.push("El rut debe contener de 8 a 10 caracteres");
+        // }
         if(!validator.validaRut(rut)){
             errors.rut.push("El rut debe ser válido (Formato: 11111111-1)");
         }
