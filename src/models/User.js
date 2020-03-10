@@ -106,6 +106,31 @@ const getByLogin = async (login) => {
     }
 }
 
+const checkIfExist = async (user) => {
+    const connection = await connecting();
+
+    try {
+        const query = `SELECT *
+                       FROM users
+                       WHERE email = $1 OR rut = $2 OR login = $3`;
+        
+        const values = [user.email, user.rut, user.login];
+
+        const result = await connection.query(query, values);
+
+        let data = result.rows[0];
+
+        if(data){
+            return true;
+        }
+
+    } catch (error) {
+        
+    } finally {
+
+    }
+}
+
 
 const remove = async (id) => {
     const connection = await connecting();
@@ -150,5 +175,6 @@ module.exports = {
     getByLogin,
     remove,
     updateById,
-    insertUserProfession
+    insertUserProfession,
+    checkIfExist
 }

@@ -1,10 +1,10 @@
-const { hasNumber,validator, validateEmail } = require('../utils/utilitiesFuctions');
+const { hasNumber,validator } = require('../utils/utilitiesFuctions');
 const save = (user) => {
     const errors = {
         rut: [],
         names: [],
         lastnames: [],
-        commune_id: [],
+        communeId: [],
         login: [],
         phone: [],
         email: []
@@ -52,11 +52,11 @@ const save = (user) => {
 
     //commune id validation
     if(!commune_id){
-        errors.commune_id.push("Comuna es requerida");
+        errors.communeId.push("Comuna es requerida");
     }
     else{
         if(!hasNumber(commune_id)){
-            errors.commune_id.push('Id de comuna debe ser valor numérico');
+            errors.communeId.push('Id de comuna debe ser valor numérico');
         }
     }
 
@@ -97,7 +97,7 @@ const save = (user) => {
     if (errors.rut.length > 0 ||
         errors.names.length > 0 ||
         errors.lastnames.length > 0 ||
-        errors.commune_id.length > 0  ||
+        errors.communeId.length > 0  ||
         errors.login.length > 0 || 
         errors.phone.length > 0 ||
         errors.email.length > 0 ) {

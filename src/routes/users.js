@@ -37,6 +37,11 @@ router.post('/', async (req, res) => {
             return;
         }
 
+        //check if user exists
+        const userExist = await userModel.checkIfExist(body);
+
+        if(userExist) return res.status(409).send({"user": [`El usuario ya se encuentra registrado`]});
+
         const newUser = await userModel.save(body);
         if(body.professions){
             for(let i = 0; i < body.professions.length; i++){
