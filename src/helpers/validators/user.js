@@ -1,4 +1,4 @@
-const { hasNumber,validator, camel } = require('../utils/utilitiesFuctions');
+const { hasNumber, validator, camel } = require('../utils/utilitiesFuctions');
 
 const save = (user) => {
 
@@ -11,10 +11,11 @@ const save = (user) => {
         communeId: [],
         login: [],
         phone: [],
-        email: []
+        email: [],
+        professions: []
     };
 
-    let { rut, names, lastnames, communeId, login, phone, email } = user;
+    let { rut, names, lastnames, communeId, login, phone, email, professions } = user;
 
     //rut validations
     if (!rut) {
@@ -23,8 +24,18 @@ const save = (user) => {
         // if (rut.trim().length < 8 || rut.trim().length > 10) {
         //     errors.rut.push("El rut debe contener de 8 a 10 caracteres");
         // }
-        if(!validator.validaRut(rut)){
+        if (!validator.validaRut(rut)) {
             errors.rut.push("El rut debe ser válido (Formato: 11111111-1)");
+        }
+    }
+
+    if (user.hasOwnProperty("professions")) {
+        if (!Array.isArray(user.professions)) {
+            errors.professions.push("Profesiones debe contener items");
+        } else {
+            if (user.professions.length < 1) {
+                errors.professions.push("Profesiones debe tener al menos 1 item");
+            }
         }
     }
 
@@ -36,64 +47,64 @@ const save = (user) => {
             errors.names.push('Los nombres debe contener mínimo 6 caracteres');
         }
 
-        if(hasNumber(names)){
+        if (hasNumber(names)) {
             errors.names.push('Los nombres no deben contener números');
         }
     }
 
     //lastnames validation
-    if(!lastnames){
+    if (!lastnames) {
         errors.lastnames.push('El apellido es requerido');
-    }else{
+    } else {
         if (lastnames.length < 3) {
             errors.lastnames.push('Los apellidos debe contener mínimo 3 caracteres');
         }
 
-        if(hasNumber(lastnames)){
+        if (hasNumber(lastnames)) {
             errors.lastnames.push('Los apellidos no deben contener números');
         }
     }
 
     //commune id validation
-    if(!communeId){
+    if (!communeId) {
         errors.communeId.push("Comuna es requerida");
     }
-    else{
-        if(!hasNumber(communeId)){
+    else {
+        if (!hasNumber(communeId)) {
             errors.communeId.push('Id de comuna debe ser valor numérico');
         }
     }
 
     //login validator
-    if(!login){
+    if (!login) {
         errors.login.push('El campo login es requerido');
-    }else{
-        if(login.length < 3){
+    } else {
+        if (login.length < 3) {
             errors.login.push('El campo login debe contener mínimo 3 caracteres');
         }
 
-        if(hasNumber(login)){
+        if (hasNumber(login)) {
             errors.login.push('El campo login no deben contener números');
         }
     }
 
     //phone validation
-    if(phone){
-        if(isNaN(phone)){
+    if (phone) {
+        if (isNaN(phone)) {
             errors.phone.push("El teléfono debe ser sólo números");
         }
 
-        if(phone.length < 7){
+        if (phone.length < 7) {
             errors.phone.push("El teléfono debe tener mínimo 7 números");
         }
     }
 
 
     //email validator
-    if(!email){
+    if (!email) {
         errors.email.push("El email es requerido");
-    }else{
-        if(!validator.validateEmail(email)){
+    } else {
+        if (!validator.validateEmail(email)) {
             errors.email.push("El email es inválido");
         }
     }
@@ -101,10 +112,11 @@ const save = (user) => {
     if (errors.rut.length > 0 ||
         errors.names.length > 0 ||
         errors.lastnames.length > 0 ||
-        errors.communeId.length > 0  ||
-        errors.login.length > 0 || 
+        errors.communeId.length > 0 ||
+        errors.login.length > 0 ||
         errors.phone.length > 0 ||
-        errors.email.length > 0 ) {
+        errors.email.length > 0 ||
+        errors.professions.length > 0) {
         return errors;
     } else {
         return undefined;
