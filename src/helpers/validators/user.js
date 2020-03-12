@@ -12,10 +12,11 @@ const save = (user) => {
         login: [],
         phone: [],
         email: [],
-        professions: []
+        professions: [],
+        entityId: []
     };
 
-    let { rut, names, lastnames, communeId, login, phone, email, professions } = user;
+    let { rut, names, lastnames, communeId, login, phone, email  } = user;
 
     //rut validations
     if (!rut) {
@@ -36,6 +37,12 @@ const save = (user) => {
             if (user.professions.length < 1) {
                 errors.professions.push("Profesiones debe tener al menos 1 item");
             }
+        }
+    }
+
+    if (user.hasOwnProperty("entityId")){
+        if (!Number.isInteger(user.entityId)) {
+            errors.entityId.push('Entidad debe ser número');
         }
     }
 
@@ -116,7 +123,8 @@ const save = (user) => {
         errors.login.length > 0 ||
         errors.phone.length > 0 ||
         errors.email.length > 0 ||
-        errors.professions.length > 0) {
+        errors.professions.length > 0 || 
+        errors.entityId.length > 0) {
         return errors;
     } else {
         return undefined;
