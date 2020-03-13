@@ -27,6 +27,32 @@ const getAll = async () => {
     }
 }
 
+const getEntitiesByAreaAndCommune = async (idArea, idCommune) => {
+    const connection = await connecting();
+    try {
+        const query = `SELECT *
+                       FROM entities ent
+                       JOIN communes com ON ent.commune_id = com.id
+                       JOIN areas ar ON ent.area_id = ar.id
+                       WHERE ar.id = $1 AND com.id = $2`;
+
+        const result = await connection.query(query, [idArea, idCommune]);
+
+        let rows = result.rows;
+
+        for(let i = 0; i < rows.length; i++){
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
+
+    } catch (error) {
+        throw { error };
+    } finally {
+
+    }
+}
+
 const save = async (entity) => {
     const connection = await connecting();
 
@@ -55,5 +81,6 @@ const save = async (entity) => {
 
 module.exports = {
     getAll,
+    getEntitiesByAreaAndCommune,
     save
 }
