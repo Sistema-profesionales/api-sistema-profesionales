@@ -49,7 +49,7 @@ const getEntitiesByAreaAndCommune = async (idArea, idCommune) => {
     } catch (error) {
         throw { error };
     } finally {
-
+        connection.release();
     }
 }
 
@@ -77,6 +77,18 @@ const save = async (entity) => {
         connection.release();
     }
 }
+
+// const checkIfExist = (idEntity) => {
+//     const connection = await connecting();
+
+//     try {
+        
+//     } catch (error) {
+        
+//     } finally {
+
+//     }
+// }
 
 
 module.exports = {
