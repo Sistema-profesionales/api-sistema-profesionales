@@ -1,8 +1,6 @@
-const { hasNumber, validator, camel } = require('../utils/utilitiesFuctions');
+const { hasNumber, validator } = require('../utils/utilitiesFuctions');
 
 const save = (user) => {
-
-    user = camel(user);
 
     const errors = {
         rut: [],
@@ -41,8 +39,13 @@ const save = (user) => {
     }
 
     if (user.hasOwnProperty("entityId")){
-        if (!Number.isInteger(user.entityId)) {
-            errors.entityId.push('Entidad debe ser número');
+        if(!user.entityId) {
+            errors.entityId.push('Entidad es requerido');
+        } else {
+            if (!Number.isInteger(user.entityId)) {
+                errors.entityId.push('Entidad debe ser número');
+            }
+
         }
     }
 
