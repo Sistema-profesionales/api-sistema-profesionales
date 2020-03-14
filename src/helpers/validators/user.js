@@ -8,13 +8,14 @@ const save = (user) => {
         lastnames: [],
         communeId: [],
         login: [],
+        password: [],
         phone: [],
         email: [],
         professions: [],
         entityId: []
     };
 
-    let { rut, names, lastnames, communeId, login, phone, email  } = user;
+    let { rut, names, lastnames, communeId, login, password, phone, email  } = user;
 
     //rut validations
     if (!rut) {
@@ -95,6 +96,14 @@ const save = (user) => {
 
         if (hasNumber(login)) {
             errors.login.push('El campo login no deben contener números');
+        }
+    }
+
+    if (!password) {
+        errors.login.push('Password es requerido');
+    } else {
+        if (login.length < 7) {
+            errors.login.push('El campo password debe contener mínimo 3 caracteres');
         }
     }
 
