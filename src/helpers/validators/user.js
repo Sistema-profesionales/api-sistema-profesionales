@@ -100,10 +100,10 @@ const save = (user) => {
     }
 
     if (!password) {
-        errors.login.push('Password es requerido');
+        errors.password.push('Password es requerido');
     } else {
-        if (login.length < 7) {
-            errors.login.push('El campo password debe contener mínimo 3 caracteres');
+        if (password.length < 7) {
+            errors.password.push('El campo password debe contener mínimo 3 caracteres');
         }
     }
 
