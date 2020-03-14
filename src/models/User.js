@@ -4,8 +4,6 @@ const { camel } = require('../helpers/utils/utilitiesFuctions');
 const save = async (user) => {
     const connection = await connecting();
 
-    user = camel(user);
-
     try {
         const query = `INSERT INTO users 
                       (rut,  names, lastnames, entity_id, commune_id, login, password, phone, email)
@@ -165,7 +163,6 @@ const checkIfLoginlExist = async (user) => {
         connection.release();
     }
 }
-checkIfLoginlExist
 
 
 const remove = async (id) => {

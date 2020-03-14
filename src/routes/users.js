@@ -86,6 +86,7 @@ router.post('/login', async (req, res) => {
             if (password === userLogin.password) {
                 delete userLogin.password;
                 res.status(200).send(userLogin);
+                return;
             } else {
                 res.status(400).send({ 'user': ['Usuario o contraseña incorrecto'] });
                 return;
