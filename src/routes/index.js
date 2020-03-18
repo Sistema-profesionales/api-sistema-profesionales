@@ -9,6 +9,7 @@ app.use('/v1/communes', require('./communes'));
 app.use('/v1/provinces', require('./provinces'));
 app.use('/v1/regions', require('./regions'));
 app.use('/v1/entities', require('./entities'));
+app.use('/v1/posts', require('./posts'));
 
 
 module.exports = app;

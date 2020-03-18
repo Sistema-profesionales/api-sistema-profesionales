@@ -9,7 +9,7 @@ app.set('port', 3000 || process.env.PORT);
 
 //middlewares
 app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
@@ -17,6 +17,6 @@ app.use(cors());
 app.use(require('./routes'));
 
 //run server passion rules the game
-app.listen( process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log(`server running on port ${app.get('port')}`);
 })

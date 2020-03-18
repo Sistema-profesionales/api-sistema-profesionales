@@ -3,6 +3,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 const userModel = require('../models/User');
 const validatorUser = require('../helpers/validators/user');
+const cheerio = require('cheerio');
+const axios = require('axios')
 
 router.get('/', async (req, res) => {
     try {
@@ -12,6 +14,29 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
+});
+
+router.get('/getInfo', async (req, res) => {
+    axios.get(process.env.SCRAP_URL + req.query.rut)
+        .then(response => {
+
+            const $ = cheerio.load(response.data);
+
+            let fullname = $('table tr:nth-child(2) td a').text();
+            if (!fullname) return res.status(400).json({ msg: 'No tienes datos de área de salud' });
+            let nameSplit = fullname.split(',');
+            let lastNames = nameSplit[0];
+            let names = nameSplit[1];
+            let speciality = $('table tr:nth-child(2) td:nth-child(3)').text();
+            let university = $('table tr:nth-child(2) td:nth-child(4)').text();
+
+            res.json({
+                names,
+                lastNames,
+                speciality,
+                university
+            })
+        })
 });
 
 router.get('/:id', async (req, res) => {

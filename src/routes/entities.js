@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const entityModel = require('../models/Entity');
 
-router.get('/', async (req,res) => {
+router.get('/', async (req, res) => {
     try {
         const entities = await entityModel.getAll();
 
@@ -12,12 +12,12 @@ router.get('/', async (req,res) => {
     }
 });
 
-router.get('/:idArea/:idCommune', async (req,res) => {
+router.get('/:idArea/:idCommune', async (req, res) => {
     try {
         const idArea = req.params.idArea;
         const idCommune = req.params.idCommune;
 
-        const entities = await entityModel.getEntitiesByAreaAndCommune(idArea,idCommune);
+        const entities = await entityModel.getEntitiesByAreaAndCommune(idArea, idCommune);
 
         res.status(200).send(entities);
 
@@ -26,7 +26,7 @@ router.get('/:idArea/:idCommune', async (req,res) => {
     }
 });
 
-router.post('/', async (req,res) => {
+router.post('/', async (req, res) => {
     try {
         const { body } = req;
 
@@ -34,7 +34,7 @@ router.post('/', async (req,res) => {
 
         res.status(201).send(newEntity);
 
-    } catch (error) {   
+    } catch (error) {
         res.status(500).send(error);
     }
 });
