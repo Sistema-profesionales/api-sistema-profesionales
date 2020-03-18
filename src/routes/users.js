@@ -20,21 +20,24 @@ router.get('/getInfo', async (req, res) => {
     axios.get(process.env.SCRAP_URL + req.query.rut)
         .then(response => {
 
-            const $ = cheerio.load(response.data);
+            const $ = cheerio.load(response.data, { decodeEntities: false });
+            // res.send($.text());
 
             let fullname = $('table tr:nth-child(2) td a').text();
             if (!fullname) return res.status(400).json({ msg: 'No tienes datos de área de salud' });
             let nameSplit = fullname.split(',');
             let lastNames = nameSplit[0];
             let names = nameSplit[1];
-            let speciality = $('table tr:nth-child(2) td:nth-child(3)').text();
+            let title = $('table tr:nth-child(2) td:nth-child(3)').text();
             let university = $('table tr:nth-child(2) td:nth-child(4)').text();
+            let specialities = $('table tr:nth-child(2) td:nth-child(5)').html().split('<br>');
 
             res.json({
                 names,
                 lastNames,
-                speciality,
-                university
+                title,
+                university,
+                specialities
             })
         })
 });
