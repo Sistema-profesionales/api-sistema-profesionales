@@ -95,7 +95,7 @@ router.get('/getInfoNew', async (req, res) => {
             // await page.focus('#certPres');
             await page.screenshot({ path: 'certificado.png' });
 
-            page.waitFor(4000);
+            page.waitFor(2000);
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
             }));
