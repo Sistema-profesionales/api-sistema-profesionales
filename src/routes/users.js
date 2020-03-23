@@ -91,11 +91,11 @@ router.get('/getInfoNew', async (req, res) => {
 
             await page.waitForSelector('.showDoc');
             await page.click('.showDoc');
-            await page.waitForSelector('#certPres');
+            // await page.waitForSelector('#certPres');
             // await page.focus('#certPres');
             await page.screenshot({ path: 'certificado.png' });
 
-
+            page.waitFor(4000);
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
             }));
