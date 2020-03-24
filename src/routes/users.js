@@ -24,7 +24,7 @@ router.get('/getInfo', async (req, res) => {
             // res.send($.text());
 
             let fullname = $('table tr:nth-child(2) td a').text();
-            if (!fullname) return res.status(400).json({ msg: 'No tienes datos de área de salud' });
+            if (!fullname) return res.status(400).json({ msg: ['No tienes datos de área de salud'] });
             let nameSplit = fullname.split(',');
             let lastNames = nameSplit[0];
             let names = nameSplit[1];
