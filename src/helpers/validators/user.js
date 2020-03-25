@@ -7,7 +7,6 @@ const save = (user) => {
         names: [],
         lastnames: [],
         communeId: [],
-        login: [],
         password: [],
         phone: [],
         email: [],
@@ -15,7 +14,7 @@ const save = (user) => {
         entityId: []
     };
 
-    let { rut, names, lastnames, communeId, login, password, phone, email  } = user;
+    let { rut, names, lastnames, communeId, login, password, phone, email } = user;
 
     //rut validations
     if (!rut) {
@@ -39,8 +38,8 @@ const save = (user) => {
         }
     }
 
-    if (user.hasOwnProperty("entityId")){
-        if(!user.entityId) {
+    if (user.hasOwnProperty("entityId")) {
+        if (!user.entityId) {
             errors.entityId.push('Entidad es requerido');
         } else {
             if (!Number.isInteger(user.entityId)) {
@@ -51,80 +50,81 @@ const save = (user) => {
     }
 
     //names validation
-    if (!names) {
-        errors.names.push('El nombre es requerido');
-    } else {
-        if (names.length < 5) {
-            errors.names.push('Los nombres debe contener mínimo 6 caracteres');
-        }
+    if (user.hasOwnProperty("names")) {
+        if (!names) {
+            errors.names.push('El nombre es requerido');
+        } else {
+            if (names.length < 5) {
+                errors.names.push('Los nombres debe contener mínimo 6 caracteres');
+            }
 
-        if (hasNumber(names)) {
-            errors.names.push('Los nombres no deben contener números');
+            if (hasNumber(names)) {
+                errors.names.push('Los nombres no deben contener números');
+            }
         }
     }
 
     //lastnames validation
-    if (!lastnames) {
-        errors.lastnames.push('El apellido es requerido');
-    } else {
-        if (lastnames.length < 3) {
-            errors.lastnames.push('Los apellidos debe contener mínimo 3 caracteres');
-        }
+    if (user.hasOwnProperty("lastnames")) {
+        if (!lastnames) {
+            errors.lastnames.push('El apellido es requerido');
+        } else {
+            if (lastnames.length < 3) {
+                errors.lastnames.push('Los apellidos debe contener mínimo 3 caracteres');
+            }
 
-        if (hasNumber(lastnames)) {
-            errors.lastnames.push('Los apellidos no deben contener números');
+            if (hasNumber(lastnames)) {
+                errors.lastnames.push('Los apellidos no deben contener números');
+            }
         }
     }
 
     //commune id validation
-    if (!communeId) {
-        errors.communeId.push("Comuna es requerida");
-    }
-    else {
-        if (!hasNumber(communeId)) {
-            errors.communeId.push('Id de comuna debe ser valor numérico');
+    if (user.hasOwnProperty("communeId")) {
+        if (!communeId) {
+            errors.communeId.push("Comuna es requerida");
+        }
+        else {
+            if (!hasNumber(communeId)) {
+                errors.communeId.push('Id de comuna debe ser valor numérico');
+            }
         }
     }
 
-    //login validator
-    if (!login) {
-        errors.login.push('El campo login es requerido');
-    } else {
-        if (login.length < 3) {
-            errors.login.push('El campo login debe contener mínimo 3 caracteres');
-        }
-
-        if (hasNumber(login)) {
-            errors.login.push('El campo login no deben contener números');
+    if (user.hasOwnProperty("password")) {
+        if (!password) {
+            errors.password.push('Password es requerido');
+        } else {
+            if (password.length < 7) {
+                errors.password.push('El campo password debe contener mínimo 7 caracteres');
+            }
         }
     }
 
-    if (!password) {
-        errors.password.push('Password es requerido');
-    } else {
-        if (password.length < 7) {
-            errors.password.push('El campo password debe contener mínimo 7 caracteres');
-        }
-    }
 
     //phone validation
-    if (phone) {
-        if (isNaN(phone)) {
-            errors.phone.push("El teléfono debe ser sólo números");
-        }
+    if (user.hasOwnProperty("phone")) {
+        if (phone) {
+            if (isNaN(phone)) {
+                errors.phone.push("El teléfono debe ser sólo números");
+            }
 
-        if (phone.length < 7) {
-            errors.phone.push("El teléfono debe tener mínimo 7 números");
+            if (phone.length < 7) {
+                errors.phone.push("El teléfono debe tener mínimo 7 números");
+            }
         }
     }
+
 
 
     //email validator
-    if (!email) {
-        errors.email.push("El email es requerido");
-    } else {
-        if (!validator.validateEmail(email)) {
-            errors.email.push("El email es inválido");
+    if (user.hasOwnProperty("email")) {
+        if (!email) {
+            errors.email.push("El email es requerido");
+        } else {
+            if (!validator.validateEmail(email)) {
+                errors.email.push("El email es inválido");
+            }
         }
     }
 
@@ -135,7 +135,7 @@ const save = (user) => {
         errors.login.length > 0 ||
         errors.phone.length > 0 ||
         errors.email.length > 0 ||
-        errors.professions.length > 0 || 
+        errors.professions.length > 0 ||
         errors.entityId.length > 0) {
         return errors;
     } else {
