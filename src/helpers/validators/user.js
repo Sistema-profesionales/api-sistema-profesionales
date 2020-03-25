@@ -143,6 +143,34 @@ const save = (user) => {
     }
 }
 
+const validateRut = (rutReq) => {
+    const errors = {
+        rut: []
+    };
+
+    let rut = rutReq;
+
+    if (!rut) {
+        errors.rut.push("El rut es requerido");
+    } else {
+        // if (rut.trim().length < 8 || rut.trim().length > 10) {
+        //     errors.rut.push("El rut debe contener de 8 a 10 caracteres");
+        // }
+        if (!validator.validaRut(rut)) {
+            errors.rut.push("El rut debe ser válido (Formato: 11111111-1)");
+        }
+    }
+
+    if (errors.rut.length > 0) {
+        return errors;
+    } else {
+        return undefined;
+    }
+
+
+}
+
 module.exports = {
-    save
+    save,
+    validateRut
 }

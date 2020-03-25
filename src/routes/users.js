@@ -17,29 +17,42 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/getInfo', async (req, res) => {
-    axios.get(process.env.SCRAP_URL + req.query.rut)
-        .then(response => {
+    if (req.query) {
+        let rut = req.query.rut;
+        const errors = validatorUser.validateRut(rut);
 
-            const $ = cheerio.load(response.data, { decodeEntities: false });
-            // res.send($.text());
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
 
-            let fullname = $('table tr:nth-child(2) td a').text();
-            if (!fullname) return res.status(400).json({ msg: ['No tienes datos de área de salud'] });
-            let nameSplit = fullname.split(',');
-            let lastNames = nameSplit[0];
-            let names = nameSplit[1];
-            let title = $('table tr:nth-child(2) td:nth-child(3)').text();
-            let university = $('table tr:nth-child(2) td:nth-child(4)').text();
-            let specialities = $('table tr:nth-child(2) td:nth-child(5)').html().split('<br>');
+        let rutOk = req.query.rut.split('-')[0];
 
-            res.json({
-                names,
-                lastNames,
-                title,
-                university,
-                specialities
+        axios.get(process.env.SCRAP_URL + rutOk)
+            .then(response => {
+
+                const $ = cheerio.load(response.data, { decodeEntities: false });
+
+                let fullname = $('table tr:nth-child(2) td a').text();
+                if (!fullname) return res.status(400).json({ msg: ['No tienes datos de área de salud'] });
+                let nameSplit = fullname.split(',');
+                let lastNames = nameSplit[0];
+                let names = nameSplit[1];
+                let title = $('table tr:nth-child(2) td:nth-child(3)').text();
+                let university = $('table tr:nth-child(2) td:nth-child(4)').text();
+                let specialities = $('table tr:nth-child(2) td:nth-child(5)').html().split('<br>');
+
+                res.json({
+                    names,
+                    lastNames,
+                    title,
+                    university,
+                    specialities
+                })
             })
-        })
+
+    }
+
 });
 
 router.get('/:id', async (req, res) => {
