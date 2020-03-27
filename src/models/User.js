@@ -137,6 +137,8 @@ const checkIfEmailExist = async (user) => {
 
         if (data) {
             return true;
+        } else {
+            return false;
         }
     } catch (error) {
         throw { error }

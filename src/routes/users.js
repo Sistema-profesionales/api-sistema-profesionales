@@ -49,7 +49,7 @@ router.get('/getInfo', async (req, res) => {
                 res.json({
                     names,
                     lastNames,
-                    title: [title],
+                    professions: [title],
                     university,
                     specialities: specialities
                 })
@@ -112,6 +112,25 @@ router.post('/', async (req, res) => {
         }
 
         res.status(201).send(newUser);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.post('/validateUser', async (req, res) => {
+    try {
+        const { body } = req;
+        const errors = validatorUser.save(body);
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        } else {
+            return {};
+        }
+
 
     } catch (error) {
         console.log(error);
