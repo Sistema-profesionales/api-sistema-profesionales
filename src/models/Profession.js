@@ -24,7 +24,7 @@ const save = async (profession) => {
     const connection = await connecting();
 
     try {
-        const queryProfession = 'SELECT name FROM professions WHERE name = $1';
+        const queryProfession = 'SELECT * FROM professions WHERE name = $1';
         const resultProfession = await connection.query(queryProfession, [profession]);
         let dataProfession = resultProfession.rows[0];
 
@@ -37,6 +37,9 @@ const save = async (profession) => {
             const result = await connection.query(query, [profession]);
             let data = result.rows[0];
             return data ? camel(data) : null;
+        } else {
+            console.log(dataProfession);
+            return dataProfession;
         }
 
 

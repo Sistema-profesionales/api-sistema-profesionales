@@ -5,7 +5,7 @@ const save = async (speciality) => {
     const connection = await connecting();
 
     try {
-        const querySpeciality = 'SELECT name FROM specialities WHERE name = $1';
+        const querySpeciality = 'SELECT * FROM specialities WHERE name = $1';
         const resultSpeciality = await connection.query(querySpeciality, [speciality]);
         let dataSpeciality = resultSpeciality.rows[0];
 
@@ -19,6 +19,9 @@ const save = async (speciality) => {
             const data = result.rows[0];
 
             return data ? data : null;
+        } else {
+            console.log(dataSpeciality)
+            return dataSpeciality;
         }
 
     } catch (error) {

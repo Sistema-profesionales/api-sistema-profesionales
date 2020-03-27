@@ -85,6 +85,7 @@ router.post('/', async (req, res) => {
 
         //check if user exists
         const userRut = await userModel.checkIfRutExist(body);
+
         if (userRut) return res.status(409).send({ "user": [`El rut ${body.rut} ya se encuentra registrado`] });
 
         const userEmail = await userModel.checkIfEmailExist(body);
@@ -94,20 +95,19 @@ router.post('/', async (req, res) => {
 
         if (body.professions) {
             for (let i = 0; i < body.professions.length; i++) {
-                await professionModel.save(body.professions[i])
-                    .then(userProf => {
-                        userModel.insertUserProfession(newUser.id, userProf.id);
-                    })
-
+                const result = await professionModel.save(body.professions[i]);
+                if (result) {
+                    await userModel.insertUserProfession(newUser.id, result.id);
+                }
             }
         }
 
         if (body.specialities) {
             for (let i = 0; i < body.specialities.length; i++) {
-                await specialitynModel.save(body.specialities[i])
-                    .then(userSpeciality => {
-                        userModel.insertUserSpeciality(newUser.id, userSpeciality.id);
-                    })
+                const result = await specialitynModel.save(body.specialities[i]);
+                if (result) {
+                    await userModel.insertUserSpeciality(newUser.id, result.id);
+                }
             }
         }
 
