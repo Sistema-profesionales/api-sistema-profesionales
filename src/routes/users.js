@@ -89,16 +89,15 @@ router.post('/', async (req, res) => {
         const userEmail = await userModel.checkIfEmailExist(body);
         if (userEmail) return res.status(409).send({ "user": [`El email ${body.email} ya se encuentra registrado`] });
 
-        // if (body.professions) {
-        //     for (let i = 0; i < body.professions.length; i++) {
-        //         await professionModel.save(body.professions[i])
-        //     }
-        // }
+        if (body.professions) {
+            for (let i = 0; i < body.professions.length; i++) {
+                await professionModel.save(body.professions[i])
+            }
+        }
 
-        res.send(body.professions);
+        const newUser = await userModel.save(body);
+        res.status(201).send(newUser);
 
-
-        // const newUser = await userModel.save(body);
         // if (body.professions) {
         //     for (let i = 0; i < body.professions.length; i++) {
         //         await userModel.insertUserProfession(newUser.id, body.professions[i].id);
@@ -111,7 +110,6 @@ router.post('/', async (req, res) => {
         //     }
         // }
 
-        // res.status(201).send(newUser);
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

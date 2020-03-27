@@ -6,13 +6,13 @@ const save = async (user) => {
 
     try {
         const query = `INSERT INTO users 
-                      (rut,  names, lastnames, entity_id, commune_id, login, password, phone, email)
-                      VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                      (rut,  names, last_names, entity_id, commune_id, password, phone, email)
+                      VALUES($1, $2, $3, $4, $5, $6, $7, $8)
                       RETURNING *`;
 
-        const values = [user.rut, user.names, user.lastnames, user.entityId, user.communeId, user.login, user.password, user.phone, user.email];
+        const values = [user.rut, user.names, user.lastNames, user.entityId, user.communeId, user.password, user.phone, user.email];
         const result = await connection.query(query, values);
-        
+
         let data = result.rows[0];
         return data ? camel(data) : null;
     } catch (error) {
@@ -51,7 +51,7 @@ const getAll = async () => {
         const result = await connection.query(query);
         let rows = result.rows;
 
-        for(let i = 0; i < rows.length; i++){
+        for (let i = 0; i < rows.length; i++) {
             delete rows[i].password;
             rows[i] = camel(rows[i]);
         }
@@ -75,7 +75,7 @@ const getById = async (id) => {
 
         const result = await connection.query(query, [id]);
         let data = result.rows[0] || null;
-        if(data) delete data.password;
+        if (data) delete data.password;
         return data ? camel(data) : null;
 
     } catch (error) {
@@ -85,24 +85,6 @@ const getById = async (id) => {
     }
 }
 
-const getByLogin = async (login) => {
-    const connection = await connecting();
-
-    try {
-        const query = `SELECT * 
-                       FROM users
-                       WHERE login = $1`;
-
-        const result = await connection.query(query, [login]);
-        let data = result.rows[0];
-
-        return data ? camel(data) : null;
-    } catch (error) {
-        throw { error };
-    } finally {
-        connection.release();
-    }
-}
 
 const checkIfRutExist = async (user) => {
     const connection = await connecting();
@@ -114,11 +96,11 @@ const checkIfRutExist = async (user) => {
         const result = await connection.query(query, [user.rut]);
         let data = result.rows[0];
 
-        if(data){
+        if (data) {
             return true;
         }
     } catch (error) {
-        throw {error}
+        throw { error }
     } finally {
         connection.release();
     }
@@ -134,31 +116,11 @@ const checkIfEmailExist = async (user) => {
         const result = await connection.query(query, [user.email]);
         let data = result.rows[0];
 
-        if(data){
+        if (data) {
             return true;
         }
     } catch (error) {
-        throw {error}
-    } finally {
-        connection.release();
-    }
-}
-
-const checkIfLoginlExist = async (user) => {
-    const connection = await connecting();
-    try {
-        const query = `SELECT *
-                       FROM users
-                       WHERE login = $1`;
-
-        const result = await connection.query(query, [user.login]);
-        let data = result.rows[0];
-
-        if(data){
-            return true;
-        }
-    } catch (error) {
-        throw {error}
+        throw { error }
     } finally {
         connection.release();
     }
@@ -205,11 +167,9 @@ module.exports = {
     save,
     getAll,
     getById,
-    getByLogin,
     remove,
     updateById,
     insertUserProfession,
     checkIfRutExist,
-    checkIfEmailExist,
-    checkIfLoginlExist
+    checkIfEmailExist
 }
