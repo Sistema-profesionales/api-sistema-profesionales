@@ -14,7 +14,7 @@ const save = (user) => {
         entityId: []
     };
 
-    let { rut, names, lastnames, communeId, login, password, phone, email } = user;
+    let { rut, names, lastnames, communeId, password, phone, email } = user;
 
     //rut validations
     if (!rut) {
@@ -132,9 +132,9 @@ const save = (user) => {
         errors.names.length > 0 ||
         errors.lastnames.length > 0 ||
         errors.communeId.length > 0 ||
-        errors.login.length > 0 ||
         errors.phone.length > 0 ||
         errors.email.length > 0 ||
+        errors.password.length > 0 ||
         errors.professions.length > 0 ||
         errors.entityId.length > 0) {
         return errors;

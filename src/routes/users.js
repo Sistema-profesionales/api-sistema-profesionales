@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken')
 const userModel = require('../models/User');
+const professionModel = require('../models/Profession');
 const validatorUser = require('../helpers/validators/user');
 const cheerio = require('cheerio');
 const axios = require('axios')
@@ -52,7 +53,6 @@ router.get('/getInfo', async (req, res) => {
                     specialities: specialities
                 })
 
-
             })
 
     }
@@ -89,19 +89,29 @@ router.post('/', async (req, res) => {
         const userEmail = await userModel.checkIfEmailExist(body);
         if (userEmail) return res.status(409).send({ "user": [`El email ${body.email} ya se encuentra registrado`] });
 
-        const userLogin = await userModel.checkIfLoginlExist(body);
-        if (userLogin) return res.status(409).send({ "user": [`El usuario con nickname ${body.login} ya se encuentra registrado`] });
+        // if (body.professions) {
+        //     for (let i = 0; i < body.professions.length; i++) {
+        //         await professionModel.save(body.professions[i])
+        //     }
+        // }
+
+        res.send(body.professions);
 
 
-        const newUser = await userModel.save(body);
-        if (body.professions) {
-            for (let i = 0; i < body.professions.length; i++) {
-                await userModel.insertUserProfession(newUser.id, body.professions[i].id);
-            }
-            console.log(body.professions);
-        }
+        // const newUser = await userModel.save(body);
+        // if (body.professions) {
+        //     for (let i = 0; i < body.professions.length; i++) {
+        //         await userModel.insertUserProfession(newUser.id, body.professions[i].id);
+        //     }
+        // }
 
-        res.status(201).send(newUser);
+        // if (body.specialities) {
+        //     for (let i = 0; i < body.professions.length; i++) {
+        //         await userModel.insertUserProfession(newUser.id, body.professions[i].id);
+        //     }
+        // }
+
+        // res.status(201).send(newUser);
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

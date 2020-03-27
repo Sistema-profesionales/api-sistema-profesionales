@@ -20,7 +20,28 @@ const getAll = async () => {
     }
 }
 
+const save = async (profession) => {
+    const connection = await connecting();
+
+    try {
+        const query = `INSERT INTO professions
+                      (name)
+                      VALUES ($1)
+                      RETURNING *`;
+
+        const result = await connection.query(query, [profession]);
+        let data = result.rows[0];
+        return data ? camel(data) : null;
+
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
+}
+
 
 module.exports = {
-    getAll
+    getAll,
+    save
 }
