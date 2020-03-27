@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 const userModel = require('../models/User');
 const professionModel = require('../models/Profession');
+const specialitynModel = require('../models/Speciality');
 const validatorUser = require('../helpers/validators/user');
 const cheerio = require('cheerio');
 const axios = require('axios')
@@ -89,26 +90,28 @@ router.post('/', async (req, res) => {
         const userEmail = await userModel.checkIfEmailExist(body);
         if (userEmail) return res.status(409).send({ "user": [`El email ${body.email} ya se encuentra registrado`] });
 
+        const newUser = await userModel.save(body);
+
         if (body.professions) {
             for (let i = 0; i < body.professions.length; i++) {
                 await professionModel.save(body.professions[i])
+                    .then(userProf => {
+                        userModel.insertUserProfession(newUser.id, userProf.id);
+                    })
+
             }
         }
 
-        const newUser = await userModel.save(body);
+        if (body.specialities) {
+            for (let i = 0; i < body.specialities.length; i++) {
+                await specialitynModel.save(body.specialities[i])
+                    .then(userSpeciality => {
+                        userModel.insertUserSpeciality(newUser.id, userSpeciality.id);
+                    })
+            }
+        }
+
         res.status(201).send(newUser);
-
-        // if (body.professions) {
-        //     for (let i = 0; i < body.professions.length; i++) {
-        //         await userModel.insertUserProfession(newUser.id, body.professions[i].id);
-        //     }
-        // }
-
-        // if (body.specialities) {
-        //     for (let i = 0; i < body.professions.length; i++) {
-        //         await userModel.insertUserProfession(newUser.id, body.professions[i].id);
-        //     }
-        // }
 
     } catch (error) {
         console.log(error);

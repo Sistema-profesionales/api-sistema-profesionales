@@ -39,6 +39,23 @@ const insertUserProfession = async (userId, professionId) => {
     }
 }
 
+const insertUserSpeciality = async (userId, specialityId) => {
+    const connection = await connecting();
+
+    try {
+        const query = `INSERT INTO users_specialities
+                       (user_id, speciality_id)
+                       VALUES ($1, $2)`;
+
+        const values = [userId, specialityId];
+        await connection.query(query, values);
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
+}
+
 
 const getAll = async () => {
     const connection = await connecting();
@@ -170,6 +187,7 @@ module.exports = {
     remove,
     updateById,
     insertUserProfession,
+    insertUserSpeciality,
     checkIfRutExist,
     checkIfEmailExist
 }
