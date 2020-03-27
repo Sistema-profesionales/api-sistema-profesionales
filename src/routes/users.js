@@ -42,13 +42,17 @@ router.get('/getInfo', async (req, res) => {
                 let university = $('table tr:nth-child(2) td:nth-child(4)').text();
                 let specialities = $('table tr:nth-child(2) td:nth-child(5)').html().split('<br>');
 
+                specialities = specialities[0] == "No Registra" ? [] : specialities
+
                 res.json({
                     names,
                     lastNames,
                     title: [title],
                     university,
-                    specialities
+                    specialities: specialities
                 })
+
+
             })
 
     }
