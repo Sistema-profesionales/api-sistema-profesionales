@@ -45,7 +45,7 @@ router.get('/getInfo', async (req, res) => {
                 res.json({
                     names,
                     lastNames,
-                    title,
+                    title: [title],
                     university,
                     specialities
                 })
