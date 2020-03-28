@@ -7,6 +7,7 @@ const specialitynModel = require('../models/Speciality');
 const validatorUser = require('../helpers/validators/user');
 const cheerio = require('cheerio');
 const axios = require('axios')
+const bcrypt = require('bcryptjs')
 
 router.get('/', async (req, res) => {
     try {
@@ -78,6 +79,7 @@ router.post('/', async (req, res) => {
         const { body } = req;
         const errors = validatorUser.save(body);
 
+
         if (errors) {
             res.status(400).send(errors);
             return;
@@ -90,6 +92,11 @@ router.post('/', async (req, res) => {
 
         const userEmail = await userModel.checkIfEmailExist(body);
         if (userEmail) return res.status(409).send({ "user": [`El email ${body.email} ya se encuentra registrado`] });
+
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(body.password, salt);
+
+        body.password = hash;
 
         const newUser = await userModel.save(body);
 
@@ -157,8 +164,13 @@ router.post('/login', async (req, res) => {
 
         const userLogin = await userModel.getByLogin(userRutOrEmail);
 
+        // console.log(userLogin.password);
+        // res.send(userLogin);
+
+        // res.send(userLogin.pasword);
+
         if (userLogin) {
-            if (password === userLogin.password) {
+            if (bcrypt.compareSync(password, userLogin.password)) {
                 delete userLogin.password;
                 res.status(200).send(userLogin);
                 return;
@@ -170,8 +182,8 @@ router.post('/login', async (req, res) => {
             res.status(400).send({ 'user': ['Usuario no existe'] });
             return;
         }
-
     } catch (error) {
+        console.log(error);
         res.status(500).send(error);
     }
 })
