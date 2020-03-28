@@ -181,7 +181,26 @@ const updateById = async (id, user) => {
     } finally {
         connection.release();
     }
+}
 
+const getByLogin = async (login) => {
+    const connection = await connecting();
+
+    try {
+        const query = `SELECT * 
+                       FROM users
+                       WHERE email = $1
+                       OR rut = $1`;
+
+        const result = await connection.query(query, [login]);
+        let data = result.rows[0];
+
+        return data ? camel(data) : null;
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
+    }
 }
 
 module.exports = {
@@ -193,5 +212,6 @@ module.exports = {
     insertUserProfession,
     insertUserSpeciality,
     checkIfRutExist,
-    checkIfEmailExist
+    checkIfEmailExist,
+    getByLogin
 }

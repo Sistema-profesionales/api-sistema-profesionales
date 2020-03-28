@@ -153,9 +153,9 @@ router.delete('/:id', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const { login, password } = req.body;
+        const { userRutOrEmail, password } = req.body;
 
-        const userLogin = await userModel.getByLogin(login);
+        const userLogin = await userModel.getByLogin(userRutOrEmail);
 
         if (userLogin) {
             if (password === userLogin.password) {
