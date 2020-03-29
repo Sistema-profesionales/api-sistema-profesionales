@@ -74,8 +74,8 @@ router.get('/getInfoNew', async (req, res) => {
             }
 
             //linea under this is for puppeteer ok in heroku
-            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-            // const browser = await puppeteer.launch();
+            //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            const browser = await puppeteer.launch();
             const page = await browser.newPage();
             await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
 
