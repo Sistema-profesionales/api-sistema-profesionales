@@ -60,14 +60,35 @@ const getByUser = async (id) => {
 
         return data ? camel(data) : null;
     } catch (error) {
-
+        throw { error };
     } finally {
+        connection.release();
+    }
+}
 
+const getByUserAndDay = async (id, day) => {
+    const connection = await connecting();
+
+    try {
+        const query = `SELECT *
+                       FROM disponibility
+                       WHERE user_id = $1
+                       AND LOWER(day_of_week) = LOWER($2)`;
+
+        const result = await connection.query(query, [id, day]);
+        let data = result.rows;
+
+        return data ? camel(data) : null;
+    } catch (error) {
+        throw { error };
+    } finally {
+        connection.release();
     }
 }
 
 module.exports = {
     save,
     getAll,
-    getByUser
+    getByUser,
+    getByUserAndDay
 }

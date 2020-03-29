@@ -3,7 +3,6 @@ const disponibilityModel = require('../models/Disponibility');
 
 router.post('/', async (req, res) => {
     try {
-        // const { userId, dayOfWeek, starHour, endHour } = req.body;
         const { body } = req;
 
         const disponibility = await disponibilityModel.save(body);
@@ -31,6 +30,19 @@ router.get('/:id', async (req, res) => {
         const disponibilities = await disponibilityModel.getByUser(userId);
         res.status(200).send(disponibilities);
     } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+router.get('/:id/:dayOfWeek', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const dayOfWeek = req.params.dayOfWeek;
+        const disponibilities = await disponibilityModel.getByUserAndDay(userId, dayOfWeek);
+        res.status(200).send(disponibilities);
+    } catch (error) {
+        console.log(error);
         res.status(500).send(error);
     }
 })
