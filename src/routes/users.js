@@ -6,8 +6,9 @@ const professionModel = require('../models/Profession');
 const specialitynModel = require('../models/Speciality');
 const validatorUser = require('../helpers/validators/user');
 const cheerio = require('cheerio');
-const axios = require('axios')
-const bcrypt = require('bcryptjs')
+const axios = require('axios');
+const bcrypt = require('bcryptjs');
+const puppeteer = require('puppeteer');
 
 router.get('/', async (req, res) => {
     try {
@@ -60,6 +61,74 @@ router.get('/getInfo', async (req, res) => {
     }
 
 });
+
+router.get('/getInfoNew', async (req, res) => {
+    try {
+        if (req.query) {
+            let rut = req.query.rut;
+            const errors = validatorUser.validateRut(rut);
+
+            if (errors) {
+                res.status(400).send(errors);
+                return;
+            }
+
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
+
+            const rutOk = rut.split('-')[0];
+            const dv = rut.split('-')[1];
+
+            await page.evaluate((rutOk, dv) => {
+                // document.querySelector('#rut_pres').value = '9823922';
+                // document.querySelector('#dv').value = '7'; 10025468-9 10000746-0  9767233-4 9863204-2
+                document.querySelector('#rut_pres').value = rutOk;
+                document.querySelector('#dv').value = dv;
+                document.querySelector('#btnBuscar2').click();
+            }, rutOk, dv);
+
+            await page.waitForSelector('.showDoc');
+            await page.click('.showDoc');
+
+            const data = await page.$$eval('table tr td', tds => tds.map((td) => {
+                return td.innerText;
+            }));
+
+            let infoData = [];
+
+            for (let i = 0; i < data.length; i++) {
+                infoData.push(data);
+            }
+
+            let fullname = infoData[0][19]; //ok for 4 person
+            let title = infoData[0][21]; //ok for 4 person
+            let university = infoData[0][22];
+            // let dateOfBirth = infoData[0][39];
+            // let rutScrapping = infoData[0][41];
+            // let sex = infoData[0][43];
+            let nacionality = infoData[0][45];
+            // let registerName = infoData[0][49];
+
+            let infoUser = {
+                names: fullname.split(',')[0]
+            }
+
+            await page.screenshot({ path: 'certificado.png' });
+
+            await browser.close();
+
+            res.send(infoUser);
+
+        } else {
+            console.log(error);
+            res.status(500).send("Error !!!");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
 
 router.get('/:id', async (req, res) => {
     try {
