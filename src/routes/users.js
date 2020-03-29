@@ -73,7 +73,9 @@ router.get('/getInfoNew', async (req, res) => {
                 return;
             }
 
+            //linea under this is for puppeteer ok in heroku
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            // const browser = await puppeteer.launch();
             const page = await browser.newPage();
             await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
 
@@ -90,40 +92,68 @@ router.get('/getInfoNew', async (req, res) => {
 
             await page.waitForSelector('.showDoc');
             await page.click('.showDoc');
+            await page.waitForSelector('#ui-id-1');
+
+            await page.screenshot({ path: 'certificado.png' });
 
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
             }));
 
-            let infoData = [];
+            // console.log(data[23]);
+            // res.send({ msg: "ok" });
 
-            for (let i = 0; i < data.length; i++) {
-                infoData.push(data);
-            }
+            let fullname = data[19]; //ok for 4 person
+            let title = data[21]; //ok for 4 person
+            let university = data[22];
+            //let title = data[34];
+            //let specialities = data[23];
+            let dateOfBirth = data[39];
+            let sex = data[43];
+            let nationality = data[45];
+            let registerNumber = data[49];
+            let registerDay = data[51];
 
-            let fullname = infoData[0][19]; //ok for 4 person
-            let title = infoData[0][21]; //ok for 4 person
-            let university = infoData[0][22];
-            // let dateOfBirth = infoData[0][39];
-            // let rutScrapping = infoData[0][41];
-            // let sex = infoData[0][43];
-            let nacionality = infoData[0][45];
-            // let registerName = infoData[0][49];
+            await browser.close();
 
             let infoUser = {
                 names: fullname.split(',')[1],
                 lastNames: fullname.split(',')[0],
                 professions: [title],
                 university,
-
+                dateOfBirth,
+                sex,
+                nationality,
+                registerNumber,
+                registerDay
             }
-
-            await page.screenshot({ path: 'certificado.png' });
-
-            await browser.close();
 
             res.send(infoUser);
 
+            // let infoData = [];
+
+            // for (let i = 0; i < data.length; i++) {
+            //     infoData.push(data);
+            // }
+
+            // let fullname = infoData[0][19]; //ok for 4 person
+            // let title = infoData[0][21]; //ok for 4 person
+            // let university = infoData[0][22];
+            // let dateOfBirth = infoData[0][39];
+            // let rutScrapping = infoData[0][41];
+            // let sex = infoData[0][43];
+            // let nationality = infoData[0][45];
+            // let registerNumber = infoData[0][49];
+
+            // let infoUser = {
+            //     names: fullname.split(',')[1],
+            //     lastNames: fullname.split(',')[0],
+            //     professions: [title],
+            //     university,
+            //     // dateOfBirth,
+            //     // sex,
+            //     // nationality
+            // }
         } else {
             console.log(error);
             res.status(500).send("Error !!!");
