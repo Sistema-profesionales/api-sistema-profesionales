@@ -14,6 +14,15 @@ router.post('/', async (req, res) => {
         console.log(error);
         res.status(500).send(error);
     }
+});
+
+router.get('/', async (req, res) => {
+    try {
+        const disponibilities = await disponibilityModel.getAll();
+        res.status(200).send(disponibilities);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 })
 
 module.exports = router;

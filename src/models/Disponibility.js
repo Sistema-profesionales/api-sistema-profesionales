@@ -24,6 +24,30 @@ const save = async (body) => {
     }
 }
 
+const getAll = async () => {
+    const connection = await connecting();
+
+    try {
+        const query = `SELECT * 
+                       FROM disponibility`;
+
+        const result = await connection.query(query);
+        let rows = result.rows;
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
+    } catch (error) {
+        console.log(error);
+        throw { error };
+    } finally {
+        connection.release()
+    }
+}
+
 module.exports = {
-    save
+    save,
+    getAll
 }
