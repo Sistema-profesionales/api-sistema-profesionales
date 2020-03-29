@@ -78,7 +78,7 @@ const getByUserAndDay = async (id, day) => {
         const result = await connection.query(query, [id, day]);
         let data = result.rows;
 
-        return data ? camel(data) : null;
+        return data;
     } catch (error) {
         throw { error };
     } finally {
