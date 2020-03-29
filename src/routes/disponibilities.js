@@ -25,6 +25,16 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const disponibilities = await disponibilityModel.getByUser(userId);
+        res.status(200).send(disponibilities);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
+
 module.exports = router;
 
 

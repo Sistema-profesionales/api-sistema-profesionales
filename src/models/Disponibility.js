@@ -47,7 +47,27 @@ const getAll = async () => {
     }
 }
 
+const getByUser = async (id) => {
+    const connection = await connecting();
+
+    try {
+        const query = `SELECT *
+                       FROM disponibility
+                       WHERE user_id = $1`;
+
+        const result = await connection.query(query, [id]);
+        let data = result.rows;
+
+        return data ? camel(data) : null;
+    } catch (error) {
+
+    } finally {
+
+    }
+}
+
 module.exports = {
     save,
-    getAll
+    getAll,
+    getByUser
 }
