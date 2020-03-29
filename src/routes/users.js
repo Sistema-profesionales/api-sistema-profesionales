@@ -73,7 +73,7 @@ router.get('/getInfoNew', async (req, res) => {
                 return;
             }
 
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
             const page = await browser.newPage();
             await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
 
@@ -111,7 +111,11 @@ router.get('/getInfoNew', async (req, res) => {
             // let registerName = infoData[0][49];
 
             let infoUser = {
-                names: fullname.split(',')[0]
+                names: fullname.split(',')[1],
+                lastNames: fullname.split(',')[0],
+                professions: [title],
+                university,
+
             }
 
             await page.screenshot({ path: 'certificado.png' });
