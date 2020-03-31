@@ -91,14 +91,38 @@ router.get('/getInfoNew', async (req, res) => {
 
             await page.waitForSelector('.showDoc');
             await page.click('.showDoc');
-            // await page.waitForSelector('#certPres');
-            // await page.focus('#certPres');
-            // await page.screenshot({ path: 'certificado.png' });
 
             await page.waitForFunction(
                 'document.querySelector("body").innerText.includes("Sexo")'
             );
 
+            await page.waitForSelector('#certPres');
+            //click to button that show the certificate
+            await page.click('#certPres');
+
+            const getNewPageWhenLoaded = async () => {
+                return new Promise(x =>
+                    browser.on('targetcreated', async target => {
+                        if (target.type() === 'page') {
+                            const newPage = await target.page();
+                            const newPagePromise = new Promise(y =>
+                                newPage.once('domcontentloaded', () => y(newPage))
+                            );
+                            const isPageLoaded = await newPage.evaluate(
+                                () => document.readyState
+                            );
+                            return isPageLoaded.match('complete|interactive')
+                                ? x(newPage)
+                                : x(newPagePromise);
+                        }
+                    })
+                );
+            };
+
+            const newPagePromise = getNewPageWhenLoaded();
+            const newPage = await newPagePromise;
+
+            await newPage.screenshot({ path: 'certificado111.png' });
 
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
