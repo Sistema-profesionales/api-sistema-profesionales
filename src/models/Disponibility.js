@@ -77,7 +77,7 @@ const getByUserAndDay = async (id, day) => {
 
         const result = await connection.query(query, [id, day]);
         let data = result.rows;
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             data[i] = camel(data[i]);
         }
 
@@ -89,9 +89,28 @@ const getByUserAndDay = async (id, day) => {
     }
 }
 
+const remove = async (id) => {
+    const connection = await connecting();
+    try {
+        const query = `DELETE 
+                       FROM disponibilities
+                       WHERE id = $1`;
+
+        const result = await connection.query(query, [id]);
+        let data = result.rows[0];
+        return data ? camel(data) : null;
+    } catch (error) {
+        res.status(500).send(error)
+    } finally {
+        connection.release();
+    }
+
+}
+
 module.exports = {
     save,
     getAll,
     getByUser,
-    getByUserAndDay
+    getByUserAndDay,
+    remove
 }

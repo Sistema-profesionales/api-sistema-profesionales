@@ -74,8 +74,8 @@ router.get('/getInfoNew', async (req, res) => {
             }
 
             //linea under this is for puppeteer ok in heroku
-            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-            // //const browser = await puppeteer.launch();
+            // const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            const browser = await puppeteer.launch();
             const page = await browser.newPage();
             await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
 
@@ -83,8 +83,7 @@ router.get('/getInfoNew', async (req, res) => {
             const dv = rut.split('-')[1];
 
             await page.evaluate((rutOk, dv) => {
-                // document.querySelector('#rut_pres').value = '9823922';
-                // document.querySelector('#dv').value = '7'; 10025468-9 10000746-0  9767233-4 9863204-2
+                // 10025468-9 10000746-0  9767233-4 9863204-2
                 document.querySelector('#rut_pres').value = rutOk;
                 document.querySelector('#dv').value = dv;
                 document.querySelector('#btnBuscar2').click();
@@ -92,16 +91,15 @@ router.get('/getInfoNew', async (req, res) => {
 
             await page.waitForSelector('.showDoc');
             await page.click('.showDoc');
-            await page.waitForSelector('#ui-id-1');
-
+            await page.waitForSelector('#certPres');
+            // await page.focus('#certPres');
             await page.screenshot({ path: 'certificado.png' });
+
 
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
             }));
 
-            // console.log(data[23]);
-            // res.send({ msg: "ok" });
 
             let fullname = data[19]; //ok for 4 person
             let title = data[21]; //ok for 4 person
@@ -113,6 +111,10 @@ router.get('/getInfoNew', async (req, res) => {
             let nationality = data[45];
             let registerNumber = data[49];
             let registerDay = data[51];
+
+            // await page.click('#certPres');
+            // await page.screenshot({ path: 'certificado.png' });
+
 
             await browser.close();
 
@@ -129,31 +131,6 @@ router.get('/getInfoNew', async (req, res) => {
             }
 
             res.send(infoUser);
-
-            // let infoData = [];
-
-            // for (let i = 0; i < data.length; i++) {
-            //     infoData.push(data);
-            // }
-
-            // let fullname = infoData[0][19]; //ok for 4 person
-            // let title = infoData[0][21]; //ok for 4 person
-            // let university = infoData[0][22];
-            // let dateOfBirth = infoData[0][39];
-            // let rutScrapping = infoData[0][41];
-            // let sex = infoData[0][43];
-            // let nationality = infoData[0][45];
-            // let registerNumber = infoData[0][49];
-
-            // let infoUser = {
-            //     names: fullname.split(',')[1],
-            //     lastNames: fullname.split(',')[0],
-            //     professions: [title],
-            //     university,
-            //     // dateOfBirth,
-            //     // sex,
-            //     // nationality
-            // }
         } else {
             console.log(error);
             res.status(500).send("Error !!!");

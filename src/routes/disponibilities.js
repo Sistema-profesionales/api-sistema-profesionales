@@ -33,7 +33,7 @@ router.get('/:id', async (req, res) => {
         console.log(error);
         res.status(500).send(error);
     }
-})
+});
 
 router.get('/:id/:dayOfWeek', async (req, res) => {
     try {
@@ -41,6 +41,17 @@ router.get('/:id/:dayOfWeek', async (req, res) => {
         const dayOfWeek = req.params.dayOfWeek;
         const disponibilities = await disponibilityModel.getByUserAndDay(userId, dayOfWeek);
         res.status(200).send(disponibilities);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const dispId = req.params.id;
+        const deleteDisponibility = await disponibilityModel.remove(dispId);
+        res.status(202).send(deleteDisponibility);
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
