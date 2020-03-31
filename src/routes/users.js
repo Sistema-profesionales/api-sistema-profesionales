@@ -93,9 +93,13 @@ router.get('/getInfoNew', async (req, res) => {
             await page.click('.showDoc');
             // await page.waitForSelector('#certPres');
             // await page.focus('#certPres');
-            await page.screenshot({ path: 'certificado.png' });
+            // await page.screenshot({ path: 'certificado.png' });
 
-            await page.waitForNavigation({ waitUntil: "networkidle2" });
+            await page.waitForFunction(
+                'document.querySelector("body").innerText.includes("Sexo")'
+            );
+
+
             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
                 return td.innerText;
             }));
