@@ -22,7 +22,10 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "pg": "^7.17.1",
-    "puppeteer": "^2.1.1"
+    "puppeteer": "^2.1.1",
+    "puppeteer-extra": "^3.1.9",
+    "puppeteer-extra-plugin-recaptcha": "^3.1.10",
+    "user-agents": "^1.0.559"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
