@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/createCert', async (req, res) => {
+router.get('/getInfo', async (req, res) => {
     try {
         if (req.query) {
             let rut = req.query.rut;
