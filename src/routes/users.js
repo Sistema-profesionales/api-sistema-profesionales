@@ -82,7 +82,11 @@ router.get('/getInfo', async (req, res) => {
                 console.log("folder creada 2");
             }
 
-            await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion.png` });
+            await page.setViewport({
+                width: 750,
+                height: 780,
+            });
+            await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
 
             res.send({ names, lastNames, professions, university, specialities });
 
