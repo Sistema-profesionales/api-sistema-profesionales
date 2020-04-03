@@ -48,13 +48,10 @@ router.get('/getInfo', async (req, res) => {
                 let cerfiticate = $('table tr:nth-child(2) td a').attr('href');
                 let hash = cerfiticate.split('/')[4].split('?')[0];
 
-                // res.send(hash);
-                // return;
-
                 specialities = specialities[0] == "No Registra" ? [] : specialities;
 
-                const certUrl = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
-                res.send(certUrl);
+                // const certUrl = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
+                // res.send(certUrl);
 
                 res.json({
                     names,
@@ -68,7 +65,6 @@ router.get('/getInfo', async (req, res) => {
     }
 
 });
-
 
 router.get('/createCert', async (req, res) => {
     try {
@@ -97,9 +93,12 @@ router.get('/createCert', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
             })
 
-            const specialities = await page.evaluate(() => {
+            let specialities = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
             })
+            specialities = specialities.split('<br>');
+
+            specialities = specialities[0] == "No Registra" ? [] : specialities;
 
             const names = fullname.split(',')[1]
             const lastNames = fullname.split(',')[0]
