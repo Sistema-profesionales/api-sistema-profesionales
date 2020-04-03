@@ -70,118 +70,6 @@ router.get('/getInfo', async (req, res) => {
 
 });
 
-// router.get('/getInfoNew', async (req, res) => {
-//     try {
-//         if (req.query) {
-//             let rut = req.query.rut;
-//             const errors = validatorUser.validateRut(rut);
-
-//             if (errors) {
-//                 res.status(400).send(errors);
-//                 return;
-//             }
-
-//             //linea under this is for puppeteer ok in heroku
-//             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-//             // const browser = await puppeteer.launch();
-//             const page = await browser.newPage();
-//             await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
-
-
-//             const rutOk = rut.split('-')[0];
-//             const dv = rut.split('-')[1];
-
-
-
-//             await page.evaluate((rutOk, dv) => {
-//                 // 10025468-9 10000746-0  9767233-4 9863204-2
-//                 document.querySelector('#rut_pres').value = rutOk;
-//                 document.querySelector('#dv').value = dv;
-//                 // document.querySelector('#btnBuscar2').click();
-//             }, rutOk, dv);
-
-//             // await page.click('#btnBuscar2');
-
-
-//             await page.waitForSelector('.showDoc');
-//             await page.click('.showDoc');
-
-//             await page.waitForFunction(
-//                 'document.querySelector("body").innerText.includes("Sexo")'
-//             );
-
-//             await page.waitForSelector('#certPres');
-//             //click to button that show the certificate
-//             await page.click('#certPres');
-
-//             const getNewPageWhenLoaded = async () => {
-//                 return new Promise(x =>
-//                     browser.on('targetcreated', async target => {
-//                         if (target.type() === 'page') {
-//                             const newPage = await target.page();
-//                             const newPagePromise = new Promise(y =>
-//                                 newPage.once('domcontentloaded', () => y(newPage))
-//                             );
-//                             const isPageLoaded = await newPage.evaluate(
-//                                 () => document.readyState
-//                             );
-//                             return isPageLoaded.match('complete|interactive')
-//                                 ? x(newPage)
-//                                 : x(newPagePromise);
-//                         }
-//                     })
-//                 );
-//             };
-
-//             const newPagePromise = getNewPageWhenLoaded();
-//             const newPage = await newPagePromise;
-
-//             await newPage.screenshot({ path: 'certificado111.png' });
-
-//             const data = await page.$$eval('table tr td', tds => tds.map((td) => {
-//                 return td.innerText;
-//             }));
-
-
-//             let fullname = data[19]; //ok for 4 person
-//             let title = data[21]; //ok for 4 person
-//             let university = data[22];
-//             //let title = data[34];
-//             //let specialities = data[23];
-//             let dateOfBirth = data[39];
-//             let sex = data[43];
-//             let nationality = data[45];
-//             let registerNumber = data[49];
-//             let registerDay = data[51];
-
-//             // await page.click('#certPres');
-//             // await page.screenshot({ path: 'certificado.png' });
-
-
-//             await browser.close();
-
-//             let infoUser = {
-//                 names: fullname.split(',')[1],
-//                 lastNames: fullname.split(',')[0],
-//                 professions: [title],
-//                 university,
-//                 dateOfBirth,
-//                 sex,
-//                 nationality,
-//                 registerNumber,
-//                 registerDay
-//             }
-
-//             res.send(infoUser);
-//         } else {
-//             console.log(error);
-//             res.status(500).send("Error !!!");
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send(error);
-//     }
-// })
 
 router.get('/createCert', async (req, res) => {
     try {
@@ -194,12 +82,38 @@ router.get('/createCert', async (req, res) => {
                 return;
             }
 
-            //  linea under this is for puppeteer ok in heroku
+            const rutOk = rut.split('-')[0];
+            //             const dv = rut.split('-')[1];
+
+            // //  linea under this is for puppeteer ok in heroku
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
             // const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.goto('http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/buscador?openForm');
 
+            const urlToGo = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/(searchAll2)/Search?SearchView&Query=FIELD%20rut_pres=${rutOk}`;
+            const page = await browser.newPage();
+            await page.goto(urlToGo);
+
+            const fullname = await page.evaluate(() => {
+                return document.querySelector('table tr:nth-child(2) td a').innerHTML;
+            });
+
+            const title = await page.evaluate(() => {
+                return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
+            })
+
+            const name = fullname.split(',')[1]
+            const lastName = fullname.split(',')[0]
+            // const professions = 
+
+            const urlHash = await page.evaluate(() => {
+                return document.querySelector('table tr:nth-child(2) td a').href;
+            });
+
+            res.send({ fullname, urlHash, title });
+            // const data = await page.$$eval('table tr td a href', tds => tds.map((td) => {
+            //     return td.innerHTML;
+            // }));
+            // res.send(data);
 
         }
     } catch (error) {
