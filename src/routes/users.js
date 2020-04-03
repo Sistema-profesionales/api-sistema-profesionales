@@ -93,6 +93,10 @@ router.get('/createCert', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
             })
 
+            const university = await page.evaluate(() => {
+                return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
+            })
+
             let specialities = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
             })
@@ -108,7 +112,7 @@ router.get('/createCert', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td a').href;
             });
 
-            res.send({ names, lastNames, professions, specialities });
+            res.send({ names, lastNames, professions, university, specialities });
 
         }
     } catch (error) {
