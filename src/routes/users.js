@@ -225,6 +225,14 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.get('/getUsersByFilters', async (req, res) => {
+    try {
+        const { body } = req;
+    } catch (error) {
+
+    }
+})
+
 // router.put('/:id', async (req,res) => {
 //     try {
 //         const id = parseInt(req.params.id);
