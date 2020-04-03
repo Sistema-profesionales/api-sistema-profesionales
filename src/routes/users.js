@@ -9,6 +9,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 router.get('/', async (req, res) => {
     try {
@@ -18,52 +19,6 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-});
-
-router.get('/getInfo', async (req, res) => {
-    if (req.query) {
-        let rut = req.query.rut;
-        const errors = validatorUser.validateRut(rut);
-
-        if (errors) {
-            res.status(400).send(errors);
-            return;
-        }
-
-        let rutOk = req.query.rut.split('-')[0];
-
-        axios.get(process.env.SCRAP_URL + rutOk)
-            .then(response => {
-
-                const $ = cheerio.load(response.data, { decodeEntities: false });
-
-                let fullname = $('table tr:nth-child(2) td a').text();
-                if (!fullname) return res.status(400).json({ msg: ['No tienes datos de área de salud'] });
-                let nameSplit = fullname.split(',');
-                let lastNames = nameSplit[0];
-                let names = nameSplit[1];
-                let title = $('table tr:nth-child(2) td:nth-child(3)').text();
-                let university = $('table tr:nth-child(2) td:nth-child(4)').text();
-                let specialities = $('table tr:nth-child(2) td:nth-child(5)').html().split('<br>');
-                let cerfiticate = $('table tr:nth-child(2) td a').attr('href');
-                let hash = cerfiticate.split('/')[4].split('?')[0];
-
-                specialities = specialities[0] == "No Registra" ? [] : specialities;
-
-                // const certUrl = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
-                // res.send(certUrl);
-
-                res.json({
-                    names,
-                    lastNames,
-                    professions: [title],
-                    university,
-                    specialities: specialities
-                })
-
-            })
-    }
-
 });
 
 router.get('/createCert', async (req, res) => {
@@ -111,6 +66,23 @@ router.get('/createCert', async (req, res) => {
             const urlHash = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td a').href;
             });
+
+            const hash = urlHash.split('/')[6].split('?')[0];
+
+            const urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
+            await page.goto(urlOfCert);
+
+            if (!fs.existsSync('./src/docs')) {
+                fs.mkdirSync('./src/docs');
+                console.log("folder creada");
+            }
+
+            if (!fs.existsSync(`./src/docs/${rut}`)) {
+                fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
+                console.log("folder creada 2");
+            }
+
+            await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion.png` });
 
             res.send({ names, lastNames, professions, university, specialities });
 
