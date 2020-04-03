@@ -65,7 +65,6 @@ router.get('/getInfo', async (req, res) => {
                 })
 
             })
-
     }
 
 });
@@ -83,9 +82,6 @@ router.get('/createCert', async (req, res) => {
             }
 
             const rutOk = rut.split('-')[0];
-            //             const dv = rut.split('-')[1];
-
-            // //  linea under this is for puppeteer ok in heroku
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
             // const browser = await puppeteer.launch();
 
@@ -101,19 +97,19 @@ router.get('/createCert', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
             })
 
-            const name = fullname.split(',')[1]
-            const lastName = fullname.split(',')[0]
-            // const professions = 
+            const specialities = await page.evaluate(() => {
+                return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
+            })
+
+            const names = fullname.split(',')[1]
+            const lastNames = fullname.split(',')[0]
+            const professions = [title];
 
             const urlHash = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td a').href;
             });
 
-            res.send({ fullname, urlHash, title });
-            // const data = await page.$$eval('table tr td a href', tds => tds.map((td) => {
-            //     return td.innerHTML;
-            // }));
-            // res.send(data);
+            res.send({ names, lastNames, professions, specialities });
 
         }
     } catch (error) {
