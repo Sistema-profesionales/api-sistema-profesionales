@@ -16,6 +16,10 @@ app.use(cors());
 //routes
 app.use(require('./routes'));
 
+app.get('/', (req, res) => {
+    res.send("holamundoo");
+})
+
 //run server passion rules the game
 app.listen(process.env.PORT || 3000, () => {
     console.log(`server running on port ${app.get('port')}`);
