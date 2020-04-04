@@ -34,81 +34,81 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.get('/getInfo', async (req, res) => {
-    try {
-        if (req.query) {
-            let rut = req.query.rut;
-            const errors = validatorUser.validateRut(rut);
+// router.get('/getInfo', async (req, res) => {
+//     try {
+//         if (req.query) {
+//             let rut = req.query.rut;
+//             const errors = validatorUser.validateRut(rut);
 
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
+//             if (errors) {
+//                 res.status(400).send(errors);
+//                 return;
+//             }
 
-            const rutOk = rut.split('-')[0];
-            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-            // const browser = await puppeteer.launch();
+//             const rutOk = rut.split('-')[0];
+//             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+//             // const browser = await puppeteer.launch();
 
-            const urlToGo = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/(searchAll2)/Search?SearchView&Query=FIELD%20rut_pres=${rutOk}`;
-            const page = await browser.newPage();
-            await page.goto(urlToGo);
+//             const urlToGo = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/(searchAll2)/Search?SearchView&Query=FIELD%20rut_pres=${rutOk}`;
+//             const page = await browser.newPage();
+//             await page.goto(urlToGo);
 
-            const fullname = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td a').innerHTML;
-            });
+//             const fullname = await page.evaluate(() => {
+//                 return document.querySelector('table tr:nth-child(2) td a').innerHTML;
+//             });
 
-            const title = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
-            })
+//             const title = await page.evaluate(() => {
+//                 return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
+//             })
 
-            const university = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
-            })
+//             const university = await page.evaluate(() => {
+//                 return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
+//             })
 
-            let specialities = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
-            })
-            specialities = specialities.split('<br>');
+//             let specialities = await page.evaluate(() => {
+//                 return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
+//             })
+//             specialities = specialities.split('<br>');
 
-            specialities = specialities[0] == "No Registra" ? [] : specialities;
+//             specialities = specialities[0] == "No Registra" ? [] : specialities;
 
-            const names = fullname.split(',')[1]
-            const lastNames = fullname.split(',')[0]
-            const professions = [title];
+//             const names = fullname.split(',')[1]
+//             const lastNames = fullname.split(',')[0]
+//             const professions = [title];
 
-            const urlHash = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td a').href;
-            });
+//             const urlHash = await page.evaluate(() => {
+//                 return document.querySelector('table tr:nth-child(2) td a').href;
+//             });
 
-            const hash = urlHash.split('/')[6].split('?')[0];
+//             const hash = urlHash.split('/')[6].split('?')[0];
 
-            const urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
-            await page.goto(urlOfCert);
+//             const urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
+//             await page.goto(urlOfCert);
 
-            if (!fs.existsSync('./src/docs')) {
-                fs.mkdirSync('./src/docs');
-                console.log("folder creada");
-            }
+//             if (!fs.existsSync('./src/docs')) {
+//                 fs.mkdirSync('./src/docs');
+//                 console.log("folder creada");
+//             }
 
-            if (!fs.existsSync(`./src/docs/${rut}`)) {
-                fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
-                console.log("folder creada 2");
-            }
+//             if (!fs.existsSync(`./src/docs/${rut}`)) {
+//                 fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
+//                 console.log("folder creada 2");
+//             }
 
-            await page.setViewport({
-                width: 750,
-                height: 780,
-            });
-            await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
+//             await page.setViewport({
+//                 width: 750,
+//                 height: 780,
+//             });
+//             await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
 
-            res.send({ names, lastNames, professions, university, specialities });
+//             res.send({ names, lastNames, professions, university, specialities });
 
-        }
-    } catch (error) {
-        console.log(error);
-        res.send(error);
-    }
-});
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.send(error);
+//     }
+// });
 
 
 router.post('/', async (req, res) => {
