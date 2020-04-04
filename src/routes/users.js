@@ -5,7 +5,6 @@ const userModel = require('../models/User');
 const professionModel = require('../models/Profession');
 const specialitynModel = require('../models/Speciality');
 const validatorUser = require('../helpers/validators/user');
-const cheerio = require('cheerio');
 const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
