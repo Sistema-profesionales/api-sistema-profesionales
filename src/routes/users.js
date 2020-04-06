@@ -228,8 +228,19 @@ router.post('/login', async (req, res) => {
 router.get('/getUsersByFilters', async (req, res) => {
     try {
         const { body } = req;
-    } catch (error) {
 
+        const result = await userModel.getUserWithFilter(body);
+
+        res.status(200).send(result);
+        // {
+        //     "communes": [1, 5, 2],
+        //     "professions": [11, 10],
+        //     "daysOfWeek": ["Lunes", "Martes", "Miercoles"],
+        //     "startHour": "00:00",
+        //     "endHour": "23:30"
+        //   }
+    } catch (error) {
+        res.status(500).send(error);
     }
 })
 
