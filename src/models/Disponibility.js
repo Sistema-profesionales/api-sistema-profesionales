@@ -5,7 +5,7 @@ const save = async (body) => {
     const connection = await connecting();
 
     try {
-        const query = `INSERT INTO disponibility
+        const query = `INSERT INTO disponibilities
                       (user_id, day_of_week, start_hour, end_hour)
                       VALUES($1, $2, $3, $4)
                       RETURNING *`;
@@ -29,7 +29,7 @@ const getAll = async () => {
 
     try {
         const query = `SELECT * 
-                       FROM disponibility`;
+                       FROM disponibilities`;
 
         const result = await connection.query(query);
         let rows = result.rows;
@@ -52,7 +52,7 @@ const getByUser = async (id) => {
 
     try {
         const query = `SELECT *
-                       FROM disponibility
+                       FROM disponibilities
                        WHERE user_id = $1`;
 
         const result = await connection.query(query, [id]);
@@ -71,7 +71,7 @@ const getByUserAndDay = async (id, day) => {
 
     try {
         const query = `SELECT *
-                       FROM disponibility
+                       FROM disponibilities
                        WHERE user_id = $1
                        AND LOWER(day_of_week) = LOWER($2)`;
 
@@ -84,6 +84,19 @@ const getByUserAndDay = async (id, day) => {
         return data;
     } catch (error) {
         throw { error };
+    } finally {
+        connection.release();
+    }
+}
+
+const deletedDisponibilities = async (userId, dayOfWeek) => {
+    const connection = await connecting();
+    try {
+        const query = `DELETE 
+                       FROM disponibilities
+                       WHERE userId = $1`;
+    } catch (error) {
+        throw { error }
     } finally {
         connection.release();
     }

@@ -44,11 +44,11 @@ router.get('/getInfo', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td a').innerHTML;
             });
 
-            const title = await page.evaluate(() => {
+            let title = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
             })
 
-            const university = await page.evaluate(() => {
+            let university = await page.evaluate(() => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
             })
 
@@ -56,6 +56,9 @@ router.get('/getInfo', async (req, res) => {
                 return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
             })
             specialities = specialities.split('<br>');
+            title = title.split('<br>');
+            university = university.split('<br>');
+            university = [university];
 
             specialities = specialities[0] == "No Registra" ? [] : specialities;
 
