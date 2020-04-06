@@ -36,7 +36,7 @@ router.get('/getInfo', async (req, res) => {
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
             // const browser = await puppeteer.launch();
 
-            const urlToGo = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/(searchAll2)/Search?SearchView&Query=FIELD%20rut_pres=${rutOk}`;
+            const urlToGo = process.env.SCRAP_URL + rutOk;
             const page = await browser.newPage();
             await page.goto(urlToGo);
 
@@ -72,7 +72,7 @@ router.get('/getInfo', async (req, res) => {
 
             const hash = urlHash.split('/')[6].split('?')[0];
 
-            urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
+            urlOfCert = process.env.DOWNLOAD_CERT_URL + hash;
 
             res.send({ names, lastNames, professions, university, specialities });
 
