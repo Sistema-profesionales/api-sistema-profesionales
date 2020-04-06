@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
+const path = require('path')
 
 
 //config
@@ -15,6 +16,7 @@ app.use(cors());
 
 //routes
 app.use(require('./routes'));
+app.use('/docs', express.static(__dirname + '/docs'));
 
 app.get('/', (req, res) => {
     res.send("holamundoo");

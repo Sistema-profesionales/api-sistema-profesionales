@@ -94,7 +94,19 @@ const deletedDisponibilities = async (userId, dayOfWeek) => {
     try {
         const query = `DELETE 
                        FROM disponibilities
-                       WHERE userId = $1`;
+                       WHERE userId = $1
+                       AND day_of_week = $2
+                       RETURNING *`;
+
+        const result = await connection.query(query, [userId, dayOfWeek]);
+        let data = result.rows;
+
+        for (let i = 0; i < data.length; i++) {
+            data[i] = camel(data[i]);
+        }
+
+        return data ? data : null;
+
     } catch (error) {
         throw { error }
     } finally {
@@ -126,5 +138,6 @@ module.exports = {
     getAll,
     getByUser,
     getByUserAndDay,
+    deletedDisponibilities,
     remove
 }
