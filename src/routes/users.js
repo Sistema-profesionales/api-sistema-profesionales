@@ -9,6 +9,7 @@ const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+let urlOfCert = "";
 
 router.get('/', async (req, res) => {
     try {
@@ -19,7 +20,6 @@ router.get('/', async (req, res) => {
         res.status(500).send(error);
     }
 });
-
 
 router.get('/getInfo', async (req, res) => {
     try {
@@ -69,24 +69,24 @@ router.get('/getInfo', async (req, res) => {
 
             const hash = urlHash.split('/')[6].split('?')[0];
 
-            const urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
-            await page.goto(urlOfCert);
+            urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
+            // await page.goto(urlOfCert);
 
-            if (!fs.existsSync('./src/docs')) {
-                fs.mkdirSync('./src/docs');
-                console.log("folder creada");
-            }
+            // if (!fs.existsSync('./src/docs')) {
+            //     fs.mkdirSync('./src/docs');
+            //     console.log("folder creada");
+            // }
 
-            if (!fs.existsSync(`./src/docs/${rut}`)) {
-                fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
-                console.log("folder creada 2");
-            }
+            // if (!fs.existsSync(`./src/docs/${rut}`)) {
+            //     fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
+            //     console.log("folder creada 2");
+            // }
 
-            await page.setViewport({
-                width: 750,
-                height: 780,
-            });
-            await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
+            // await page.setViewport({
+            //     width: 750,
+            //     height: 780,
+            // });
+            // await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
 
             res.send({ names, lastNames, professions, university, specialities });
 
@@ -110,10 +110,9 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-
 router.post('/', async (req, res) => {
     try {
-        const { body } = req;
+        let { body } = req;
         const errors = validatorUser.save(body);
 
 
@@ -154,6 +153,27 @@ router.post('/', async (req, res) => {
                 }
             }
         }
+
+        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        const page = await browser.newPage();
+        await page.goto(urlOfCert);
+
+
+        if (!fs.existsSync('./src/docs')) {
+            fs.mkdirSync('./src/docs');
+            console.log("folder creada");
+        }
+
+        if (!fs.existsSync(`./src/docs/${body.rut}`)) {
+            fs.mkdirSync(`./src/docs/${body.rut}`); //HERE I AM
+            console.log("folder creada 2");
+        }
+
+        await page.setViewport({
+            width: 750,
+            height: 780,
+        });
+        await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion2.png` });
 
         res.status(201).send(newUser);
 
@@ -243,21 +263,5 @@ router.get('/getUsersByFilters', async (req, res) => {
         res.status(500).send(error);
     }
 })
-
-// router.put('/:id', async (req,res) => {
-//     try {
-//         const id = parseInt(req.params.id);
-//         const { body } = req;
-
-//         const user = await userModel.getById(id);
-
-//         if( !user) return res.status(404).send({"user": [`El usuario con id ${id} no existe`]});
-
-
-//     } catch (error) {
-//         res.status(500).send(error);
-//     }
-// });
-
 
 module.exports = router;
