@@ -94,18 +94,18 @@ const deletedDisponibilities = async (userId, dayOfWeek) => {
     try {
         const query = `DELETE 
                        FROM disponibilities
-                       WHERE userId = $1
-                       AND day_of_week = $2
+                       WHERE user_id = $1
+                       AND LOWER(day_of_week) = LOWER($2)
                        RETURNING *`;
 
         const result = await connection.query(query, [userId, dayOfWeek]);
-        let data = result.rows;
+        // let data = result.rows;
 
-        for (let i = 0; i < data.length; i++) {
-            data[i] = camel(data[i]);
-        }
+        // for (let i = 0; i < data.length; i++) {
+        //     data[i] = camel(data[i]);
+        // }
 
-        return data ? data : null;
+        return result.rows;
 
     } catch (error) {
         throw { error }
@@ -118,7 +118,7 @@ const remove = async (id) => {
     const connection = await connecting();
     try {
         const query = `DELETE 
-                       FROM disponibility
+                       FROM disponibilities
                        WHERE id = $1
                        RETURNING *`;
 
