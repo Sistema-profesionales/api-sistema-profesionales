@@ -70,23 +70,6 @@ router.get('/getInfo', async (req, res) => {
             const hash = urlHash.split('/')[6].split('?')[0];
 
             urlOfCert = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/CertificadoRegistro?openform&pid=${hash}`;
-            // await page.goto(urlOfCert);
-
-            // if (!fs.existsSync('./src/docs')) {
-            //     fs.mkdirSync('./src/docs');
-            //     console.log("folder creada");
-            // }
-
-            // if (!fs.existsSync(`./src/docs/${rut}`)) {
-            //     fs.mkdirSync(`./src/docs/${rut}`); //HERE I AM
-            //     console.log("folder creada 2");
-            // }
-
-            // await page.setViewport({
-            //     width: 750,
-            //     height: 780,
-            // });
-            // await page.screenshot({ path: `./src//docs/${rut}/certificado_inscripcion2.png` });
 
             res.send({ names, lastNames, professions, university, specialities });
 
