@@ -22,5 +22,16 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// router.post('/:idCommune/:idProvince', async (req, res) => {
+//     try {
+//         const { body } = req;
+
+//         const result = await communeModel.getUserWithFilter(body);
+//         res.status(200).send(result);
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
+
 module.exports = router;
 

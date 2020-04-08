@@ -11,6 +11,9 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 let urlOfCert = "";
 
+/**
+ * Obtiene todos los usuarios en el sistema.
+ */
 router.get('/', async (req, res) => {
     try {
         const users = await userModel.getAll();
@@ -21,6 +24,9 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * Scrapping para obtener la info del rut ingresado.
+ */
 router.get('/getInfo', async (req, res) => {
     try {
         if (req.query) {

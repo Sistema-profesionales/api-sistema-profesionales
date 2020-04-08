@@ -203,6 +203,17 @@ const getByLogin = async (login) => {
     }
 }
 
+// const getUserWithFilter = async = (body) => {
+//     const connection = await connecting();
+//     try {
+//         const query = ``
+//     } catch (error) {
+//         throw { error }
+//     } finally {
+//         connection.release();
+//     }
+// }
+
 module.exports = {
     save,
     getAll,
