@@ -42,45 +42,91 @@ router.get('/getInfo', async (req, res) => {
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
             // const browser = await puppeteer.launch();
 
-            const urlToGo = process.env.SCRAP_URL + rutOk;
-            const page = await browser.newPage();
-            await page.goto(urlToGo);
+            try {
+                const urlToGo = process.env.SCRAP_URL + rutOk;
+                const page = await browser.newPage();
+                await page.goto(urlToGo);
 
-            const fullname = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td a').innerHTML;
-            });
+                const fullname = await page.evaluate(() => {
+                    return document.querySelector('table tr:nth-child(2) td a').innerHTML;
+                });
 
-            let title = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
-            })
+                let title = await page.evaluate(() => {
+                    return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
+                })
 
-            let university = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
-            })
+                let university = await page.evaluate(() => {
+                    return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
+                })
 
-            let specialities = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
-            })
-            specialities = specialities.split('<br>');
-            title = title.split('<br>');
-            university = university.split('<br>');
-            university = [university];
+                let specialities = await page.evaluate(() => {
+                    return document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML
+                })
+                specialities = specialities.split('<br>');
+                title = title.split('<br>');
+                university = university.split('<br>');
+                university = [university];
 
-            specialities = specialities[0] == "No Registra" ? [] : specialities;
+                specialities = specialities[0] == "No Registra" ? [] : specialities;
 
-            const names = fullname.split(',')[1]
-            const lastNames = fullname.split(',')[0]
-            const professions = [title];
+                const names = fullname.split(',')[1]
+                const lastNames = fullname.split(',')[0]
+                const professions = [title];
 
-            const urlHash = await page.evaluate(() => {
-                return document.querySelector('table tr:nth-child(2) td a').href;
-            });
+                const urlHash = await page.evaluate(() => {
+                    return document.querySelector('table tr:nth-child(2) td a').href;
+                });
 
-            const hash = urlHash.split('/')[6].split('?')[0];
+                const hash = urlHash.split('/')[6].split('?')[0];
 
-            urlOfCert = process.env.DOWNLOAD_CERT_URL + hash;
+                urlOfCert = process.env.DOWNLOAD_CERT_URL + hash;
 
-            res.send({ names, lastNames, professions, university, specialities });
+                res.send({ names, lastNames, professions, university, specialities });
+            } catch (error) {
+                if (error.message.includes("Cannot read property 'innerHTML' of null")) {
+                    const urlToGo = `http://webhosting.superdesalud.gob.cl/bases/prestadoresindividuales.nsf/(searchAll2)/Search?SearchView&Query=(FIELD%20rut_pres=${rutOk})&Start=1&count=10`;
+                    const page = await browser.newPage();
+                    await page.goto(urlToGo);
+
+                    const fullname = await page.evaluate(() => {
+                        return document.querySelector('table tr:nth-child(2) td a').innerHTML;
+                    });
+
+                    let title = await page.evaluate(() => {
+                        return document.querySelector('table tr:nth-child(2) td:nth-child(3)').innerHTML;
+                    })
+
+                    let university = await page.evaluate(() => {
+                        return document.querySelector('table tr:nth-child(2) td:nth-child(4)').innerHTML
+                    })
+
+                    let specialities = await page.evaluate(() => {
+
+                        return document.querySelector('table tr:nth-child(2) td:nth-child(5)') && document.querySelector('table tr:nth-child(2) td:nth-child(5)').innerHTML || "";
+                    })
+                    specialities = specialities.split('<br>');
+                    title = title.split('<br>');
+                    // university = university.split('<br>');
+                    // university = [university];
+                    // specialities = specialities.length > 0 ? specialities == "No Registra" || specialities == "" ? [] : specialities;
+                    specialities = (Array.isArray(specialities) && specialities.length > 0 && (specialities[0].includes("No") || specialities[0] == "") || (specialities.includes("No") || specialities == "")) ? [] : specialities;
+
+                    const names = fullname.split(',')[1]
+                    const lastNames = fullname.split(',')[0]
+                    const professions = [title];
+
+                    const urlHash = await page.evaluate(() => {
+                        return document.querySelector('table tr:nth-child(2) td a').href;
+                    });
+
+                    const hash = urlHash.split('/')[6].split('?')[0];
+
+                    urlOfCert = process.env.DOWNLOAD_CERT_URL + hash;
+
+                    res.send({ names, lastNames, professions, university, specialities });
+
+                }
+            }
 
         }
     } catch (error) {
