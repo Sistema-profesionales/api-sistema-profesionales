@@ -203,16 +203,29 @@ const getByLogin = async (login) => {
     }
 }
 
-// const getUserWithFilter = async = (body) => {
-//     const connection = await connecting();
-//     try {
-//         const query = ``
-//     } catch (error) {
-//         throw { error }
-//     } finally {
-//         connection.release();
-//     }
-// }
+const getUserWithFilter = async (body) => {
+    const connection = await connecting();
+
+    let communes = body.communes.join(', ');
+
+    try {
+        const query = `
+                        SELECT u.*
+                        FROM users u
+                        LEFT JOIN users_professions usp ON u.id = usp.user_id
+                        LEFT JOIN disponibilities disp ON u.id = disp.user_id
+                        WHERE u.commune_id IN (${communes})
+                        AND 'Lunes' ~ disp.day_of_week`;
+
+        const result = await connection.query(query);
+
+        return result.rows;
+    } catch (error) {
+        throw { error }
+    } finally {
+        connection.release();
+    }
+}
 
 module.exports = {
     save,
@@ -224,5 +237,6 @@ module.exports = {
     insertUserSpeciality,
     checkIfRutExist,
     checkIfEmailExist,
-    getByLogin
+    getByLogin,
+    getUserWithFilter
 }

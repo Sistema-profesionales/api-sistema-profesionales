@@ -135,6 +135,18 @@ router.get('/getInfo', async (req, res) => {
     }
 });
 
+router.get('/getUsersByFilters', async (req, res) => {
+    try {
+        const { body } = req;
+        const result = await userModel.getUserWithFilter(body);
+
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
 router.get('/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
@@ -211,7 +223,7 @@ router.post('/', async (req, res) => {
             width: 750,
             height: 780,
         });
-        await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion2.png` });
+        await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion.png` });
 
         res.status(201).send(newUser);
 
@@ -283,23 +295,5 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/getUsersByFilters', async (req, res) => {
-    try {
-        const { body } = req;
-
-        const result = await userModel.getUserWithFilter(body);
-
-        res.status(200).send(result);
-        // {
-        //     "communes": [1, 5, 2],
-        //     "professions": [11, 10],
-        //     "daysOfWeek": ["Lunes", "Martes", "Miercoles"],
-        //     "startHour": "00:00",
-        //     "endHour": "23:30"
-        //   }
-    } catch (error) {
-        res.status(500).send(error);
-    }
-})
-
 module.exports = router;
+
