@@ -18,9 +18,6 @@ app.use(cors());
 app.use(require('./routes'));
 app.use('/docs', express.static(__dirname + '/docs'));
 
-app.get('/', (req, res) => {
-    res.send("holamundoo");
-})
 
 //run server passion rules the game
 app.listen(process.env.PORT || 3000, () => {
