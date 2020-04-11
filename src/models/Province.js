@@ -60,12 +60,42 @@ const getCommunesByProvId = async (id) => {
     } catch (error) {
         throw { error }
     } finally {
-        connection.release()
+        connection.release();
     }   
+}
+
+const getCommunesByProvinceAndUserId = async (userId) => {
+    const connection = await connecting();
+    try {
+        const query = `
+        select *
+        from communes
+        where province_id = (
+                select pro.id 
+                from provinces as pro
+                inner join communes as com on com.province_id = pro.id 
+                inner join users as u on com.id = u.commune_id
+                where u.id = $1
+        )`;
+
+        const result = await connection.query(query, [userId]);
+        let rows = result.rows;
+
+        for(let i = 0; i < rows.length; i++){
+            rows[i] = camel(rows[i]);
+        }
+
+        return rows;
+    } catch (error) {
+        
+    } finally {
+        connection.release();
+    }
 }
 
 module.exports = {
     getAll,
     getById,
-    getCommunesByProvId
+    getCommunesByProvId,
+    getCommunesByProvinceAndUserId
 }

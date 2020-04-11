@@ -31,4 +31,14 @@ router.get('/:id/communes', async (req,res) => {
     }
 });
 
+router.get('/user/:userId/communes', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const communes = await provinceModel.getCommunesByProvinceAndUserId(userId);
+        res.status(200).send(communes);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 module.exports = router;
