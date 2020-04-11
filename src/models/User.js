@@ -211,8 +211,6 @@ const getUserWithFilter = async (body) => {
     let userProfessions = body.professions.join(', ');
     daysOfWeek = `'${daysOfWeek}'`;
 
-    console.log(userProfessions);
-
     try {
         const query = `
                         SELECT u.id AS user_id,
@@ -233,10 +231,12 @@ const getUserWithFilter = async (body) => {
                         JOIN professions prof ON usp.profession_id = prof.id
                         WHERE u.commune_id IN (${communes})
                         AND disp.day_of_week IN (${daysOfWeek})
-                        AND usp.profession_id IN (${userProfessions})`;
+                        AND usp.profession_id IN (${userProfessions})
+                        AND disp.start_hour = $1
+                        AND disp.end_hour = $2`;
 
 
-        const result = await connection.query(query);
+        const result = await connection.query(query, [body.startHour, body.endHour]);
 
         return result.rows;
     } catch (error) {
