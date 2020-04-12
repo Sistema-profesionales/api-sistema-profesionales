@@ -24,6 +24,28 @@ const save = async (body) => {
     }
 }
 
+const saveNew = async (body) => {
+    const connection = await connecting();
+
+    console.log(typeof body.disponibilities);
+
+    try {
+        const query = `INSERT INTO disponibilities_dev
+                       (user_id, disponibilities)
+                       VALUES($1, $2)
+                       RETURNING *`;
+
+        const values = [body.userId, body.disponibilities];
+        const result = await connection.query(query, values);
+
+        return result;
+    } catch (error) {
+        throw { error }
+    } finally {
+        connection.release();
+    }
+}
+
 const getAll = async () => {
     const connection = await connecting();
 
@@ -135,6 +157,7 @@ const remove = async (id) => {
 
 module.exports = {
     save,
+    saveNew,
     getAll,
     getByUser,
     getByUserAndDay,

@@ -10,7 +10,18 @@ router.post('/', async (req, res) => {
         res.status(201).send(disponibility);
 
     } catch (error) {
-        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.post('/new', async (req, res) => {
+    try {
+        const { body } = req;
+
+        const disponibility = await disponibilityModel.saveNew(body);
+        res.status(201).send(disponibility);
+
+    } catch (error) {
         res.status(500).send(error);
     }
 });

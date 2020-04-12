@@ -221,11 +221,8 @@ const getUserWithFilter = async (body) => {
                                u.commune_id,
                                u.phone,
                                u.email,
-                               disp.id AS disp_id,
-                               disp.day_of_week,
-                               disp.start_hour,
-                               disp.end_hour,
-                               prof.name AS profession_name
+                               prof.name AS profession_name,
+                               array_agg(disp.id) as disponibilities
                         FROM users u
                         JOIN users_professions usp ON u.id = usp.user_id
                         JOIN disponibilities disp ON u.id = disp.user_id
@@ -234,25 +231,41 @@ const getUserWithFilter = async (body) => {
                         AND disp.day_of_week IN (${daysOfWeek})
                         AND usp.profession_id IN (${userProfessions})
                         AND disp.start_hour BETWEEN $1 AND $2
-                        AND disp.end_hour BETWEEN $1 AND $2`;
+                        AND disp.end_hour BETWEEN $1 AND $2
+                        GROUP BY u.id, prof.name`;
 
 
         let { rows } = await connection.query(query, [body.startHour, body.endHour]);
 
+        // let res = _.chain(rows)
+        //     .groupBy('day_of_week')
         let idsUsers = [];
+        let newInfo = [];
 
-        rows.forEach(rows => {
+        // rows.forEach((row, i) => {
 
-            if (idsUsers.includes(rows.user_id)) {
-                rows.disponibilities = "aca la agrego al mismo";
-            } else {
-                rows.disponibilities = "aca crearia otro creo, pq no se repite :D";
-            }
+        //     if (idsUsers.includes(row.user_id)) {
+        //         // rows.disponibilities = "aca la agrego al mismo";
+        //         newInfo.push({
+        //             user_id: row.user_id,
+        //             rut: row.rut,
+        //             names: row.names,
+        //             last_names: row.last_names,
+        //             commune_id: row.commune_id,
+        //             phone: row.phone,
+        //             email: row.email,
+        //             profession_name: row.profession_name,
+        //             disponibilities: []
+        //         })
 
-            idsUsers.push(rows.user_id);
-            // rows.disponibilities = [];
-            // rows.disponibilities.push({ daysOfWeek: rows.day_of_week })
-        })
+
+        //     } else {
+        //         // rows.disponibilities = "aca crearia otro creo, pq no se repite :D";
+
+        //     }
+
+        //     idsUsers.push(row.user_id);
+        // })
 
         return rows
 
