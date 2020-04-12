@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 let urlOfCert = "";
+let _ = require('lodash');
 
 /**
  * Obtiene todos los usuarios en el sistema.
@@ -137,25 +138,11 @@ router.get('/getInfo', async (req, res) => {
 
 router.get('/getUsersByFilters', async (req, res) => {
     try {
+
         const { body } = req;
-
-        // //Check if body has communes
-        // if (body.hasOwnProperty("communes")) {
-        //     body.communes = body.communes.join(', ');
-        // }
-
-        // if (body.hasOwnProperty("daysOfWeek")) {
-        //     let daysOfWeek = body.daysOfWeek.join(`', '`)
-        //     body.daysOfWeek = `'${daysOfWeek}'`;
-        // }
-
-        // if (body.hasOwnProperty("professions")) {
-        //     body.professions = body.professions.join(', ');
-        // }
-
         const result = await userModel.getUserWithFilter(body);
-
         res.status(200).send(result);
+
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

@@ -221,8 +221,11 @@ const getUserWithFilter = async (body) => {
                                u.commune_id,
                                u.phone,
                                u.email,
-                               prof.name AS profession_name,
-                               array_agg(disp.id) as disponibilities
+                               disp.id AS disp_id,
+                               disp.day_of_week,
+                               disp.start_hour,
+                               disp.end_hour,
+                               prof.name AS profession_name
                         FROM users u
                         JOIN users_professions usp ON u.id = usp.user_id
                         JOIN disponibilities disp ON u.id = disp.user_id
@@ -231,43 +234,31 @@ const getUserWithFilter = async (body) => {
                         AND disp.day_of_week IN (${daysOfWeek})
                         AND usp.profession_id IN (${userProfessions})
                         AND disp.start_hour BETWEEN $1 AND $2
-                        AND disp.end_hour BETWEEN $1 AND $2
-                        GROUP BY u.id, prof.name`;
+                        AND disp.end_hour BETWEEN $1 AND $2`;
 
 
         let { rows } = await connection.query(query, [body.startHour, body.endHour]);
 
-        // let res = _.chain(rows)
-        //     .groupBy('day_of_week')
-        let idsUsers = [];
-        let newInfo = [];
+        let result = _.chain(rows).groupBy('user_id').map((data, key) => ({
+            data
+        }))
 
-        // rows.forEach((row, i) => {
+        let response = result.map((res, index) => ({
+            user_id: res.data[0].user_id,
+            rut: res.data[0].rut,
+            names: res.data[0].names,
+            lastNames: res.data[0].last_names,
+            communeId: res.data[0].commune_id,
+            phone: res.data[0].phone,
+            email: res.data[0].email,
+            disponibilities: res.data.map((disp, i) => ({
+                dayOfWeek: disp.day_of_week,
+                startHour: disp.start_hour,
+                endHour: disp.end_hour
+            }))
+        }))
 
-        //     if (idsUsers.includes(row.user_id)) {
-        //         // rows.disponibilities = "aca la agrego al mismo";
-        //         newInfo.push({
-        //             user_id: row.user_id,
-        //             rut: row.rut,
-        //             names: row.names,
-        //             last_names: row.last_names,
-        //             commune_id: row.commune_id,
-        //             phone: row.phone,
-        //             email: row.email,
-        //             profession_name: row.profession_name,
-        //             disponibilities: []
-        //         })
-
-
-        //     } else {
-        //         // rows.disponibilities = "aca crearia otro creo, pq no se repite :D";
-
-        //     }
-
-        //     idsUsers.push(row.user_id);
-        // })
-
-        return rows
+        return response
 
 
     } catch (error) {
