@@ -238,6 +238,7 @@ const getUserWithFilter = async (body) => {
                                comm.name AS commune,
                                u.phone,
                                u.email,
+                               prof.name AS professions,
                                disp.id AS disp_id,
                                disp.day_of_week,
                                disp.start_hour,
@@ -271,6 +272,7 @@ const getUserWithFilter = async (body) => {
             commune: res.data[0].commune,
             phone: res.data[0].phone,
             email: res.data[0].email,
+            professions: res.data[0].professions.split(','),
             disponibilities: _.chain(res.data.map((disp, i) => ({
                 dayOfWeek: disp.day_of_week,
                 hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
