@@ -252,12 +252,11 @@ const getUserWithFilter = async (body) => {
             communeId: res.data[0].commune_id,
             phone: res.data[0].phone,
             email: res.data[0].email,
-            disponibilities: res.data.map((disp, i) => ({
+            disponibilities: _.chain(res.data.map((disp, i) => ({
                 dayOfWeek: disp.day_of_week,
-                hours: [
-                    `${disp.start_hour} - ${disp.end_hour}`
-                ]
-            }))
+                hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
+                        .map(e => `${e.start_hour} - ${e.end_hour}`)
+            }))).uniqBy("dayOfWeek")
         }))
 
         return response
