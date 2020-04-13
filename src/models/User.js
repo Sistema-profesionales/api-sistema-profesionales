@@ -243,6 +243,7 @@ const getUserWithFilter = async (body) => {
             data
         }))
 
+
         let response = result.map((res, index) => ({
             user_id: res.data[0].user_id,
             rut: res.data[0].rut,
@@ -252,9 +253,7 @@ const getUserWithFilter = async (body) => {
             phone: res.data[0].phone,
             email: res.data[0].email,
             disponibilities: res.data.map((disp, i) => ({
-                dayOfWeek: disp.day_of_week,
-                startHour: disp.start_hour,
-                endHour: disp.end_hour
+                dayOfWeek: disp.day_of_week
             }))
         }))
 
