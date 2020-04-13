@@ -253,7 +253,10 @@ const getUserWithFilter = async (body) => {
             phone: res.data[0].phone,
             email: res.data[0].email,
             disponibilities: res.data.map((disp, i) => ({
-                dayOfWeek: disp.day_of_week
+                dayOfWeek: disp.day_of_week,
+                hours: [
+                    `${disp.start_hour} - ${disp.end_hour}`
+                ]
             }))
         }))
 
