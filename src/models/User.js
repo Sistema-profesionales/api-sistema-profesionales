@@ -226,6 +226,8 @@ const getUserWithFilter = async (body) => {
 
         // let queryWhere = ``;
 
+        // let query = querySelect + queryFrom + queryWhere;
+
 
         const query = `
                         SELECT u.id AS user_id,
@@ -233,6 +235,7 @@ const getUserWithFilter = async (body) => {
                                u.names,
                                u.last_names,
                                u.commune_id,
+                               comm.name AS commune,
                                u.phone,
                                u.email,
                                disp.id AS disp_id,
@@ -244,6 +247,7 @@ const getUserWithFilter = async (body) => {
                         JOIN users_professions usp ON u.id = usp.user_id
                         JOIN disponibilities disp ON u.id = disp.user_id
                         JOIN professions prof ON usp.profession_id = prof.id
+                        JOIN communes comm ON u.commune_id = comm.id
                         WHERE u.commune_id IN (${communes})
                         AND disp.day_of_week IN (${daysOfWeek})
                         AND usp.profession_id IN (${userProfessions})
@@ -264,6 +268,7 @@ const getUserWithFilter = async (body) => {
             names: res.data[0].names,
             lastNames: res.data[0].last_names,
             communeId: res.data[0].commune_id,
+            commune: res.data[0].commune,
             phone: res.data[0].phone,
             email: res.data[0].email,
             disponibilities: _.chain(res.data.map((disp, i) => ({
