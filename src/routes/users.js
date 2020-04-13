@@ -136,7 +136,7 @@ router.get('/getInfo', async (req, res) => {
     }
 });
 
-router.get('/getUsersByFilters', async (req, res) => {
+router.post('/getUsersByFilters', async (req, res) => {
     try {
 
         const { body } = req;

@@ -213,6 +213,20 @@ const getUserWithFilter = async (body) => {
     daysOfWeek = `'${daysOfWeek}'`;
 
     try {
+        // let querySelect = `SELECT u.id AS user_id,
+        //                        u.rut,
+        //                        u.names,
+        //                        u.last_names,
+        //                        u.commune_id,
+        //                        u.phone,
+        //                        u.email,`;
+
+        // let queryFrom = `FROM users u
+        // `;
+
+        // let queryWhere = ``;
+
+
         const query = `
                         SELECT u.id AS user_id,
                                u.rut,
@@ -255,7 +269,7 @@ const getUserWithFilter = async (body) => {
             disponibilities: _.chain(res.data.map((disp, i) => ({
                 dayOfWeek: disp.day_of_week,
                 hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
-                        .map(e => `${e.start_hour} - ${e.end_hour}`)
+                    .map(e => `${e.start_hour} - ${e.end_hour}`)
             }))).uniqBy("dayOfWeek")
         }))
 
