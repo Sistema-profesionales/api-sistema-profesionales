@@ -256,16 +256,18 @@ const getUserWithFilter = async (body) => {
         }
 
         if (body.hasOwnProperty("daysOfWeek")) {
-            values.push(body.startHour);
-            values.push(body.endHour);
-            if (queryWhere == "") {
-                queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek}) 
-                                AND disp.start_hour BETWEEN $1 AND $2
-                                AND disp.end_hour BETWEEN $1 AND $2`;
-            } else {
-                queryWhere += ` AND disp.day_of_week IN (${daysOfWeek}) 
-                                AND disp.start_hour BETWEEN $1 AND $2
-                                AND disp.end_hour BETWEEN $1 AND $2`;
+            if (body.daysOfWeek.length > 0) {
+                values.push(body.startHour);
+                values.push(body.endHour);
+                if (queryWhere == "") {
+                    queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek}) 
+                                    AND disp.start_hour BETWEEN $1 AND $2
+                                    AND disp.end_hour BETWEEN $1 AND $2`;
+                } else {
+                    queryWhere += ` AND disp.day_of_week IN (${daysOfWeek}) 
+                                    AND disp.start_hour BETWEEN $1 AND $2
+                                    AND disp.end_hour BETWEEN $1 AND $2`;
+                }
             }
         }
 
