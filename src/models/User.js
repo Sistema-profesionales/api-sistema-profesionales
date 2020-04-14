@@ -272,14 +272,16 @@ const getUserWithFilter = async (body) => {
         }
 
         if (body.hasOwnProperty("professions")) {
-            querySelect += `, prof.name AS professions`;
-            queryFrom += ` JOIN users_professions usp ON u.id = usp.user_id
+            if (body.professions.length > 0) {
+                querySelect += `, prof.name AS professions`;
+                queryFrom += ` JOIN users_professions usp ON u.id = usp.user_id
                 JOIN professions prof ON usp.profession_id = prof.id`;
 
-            if (queryWhere == "") {
-                queryWhere += `WHERE usp.profession_id IN(${userProfessions})`;
-            } else {
-                queryWhere += `AND usp.profession_id IN(${userProfessions})`;
+                if (queryWhere == "") {
+                    queryWhere += `WHERE usp.profession_id IN(${userProfessions})`;
+                } else {
+                    queryWhere += `AND usp.profession_id IN(${userProfessions})`;
+                }
             }
 
         }
