@@ -233,13 +233,16 @@ const getUserWithFilter = async (body) => {
                                u.last_names,
                                u.commune_id,
                                u.phone,
+                               prof.name AS professions,
                                u.email,disp.id AS disp_id,
                                disp.day_of_week,
                                disp.start_hour,
                                disp.end_hour`;
 
         let queryFrom = ` FROM users u
-                          JOIN disponibilities disp ON u.id = disp.user_id`;
+                          JOIN disponibilities disp ON u.id = disp.user_id
+                          JOIN users_professions usp ON u.id = usp.user_id
+                          JOIN professions prof ON usp.profession_id = prof.id`;
         let queryWhere = ``;
 
         if (body.hasOwnProperty("communes")) {
@@ -255,11 +258,6 @@ const getUserWithFilter = async (body) => {
         if (body.hasOwnProperty("daysOfWeek")) {
             values.push(body.startHour);
             values.push(body.endHour);
-            // querySelect += `,  disp.id AS disp_id,
-            //                    disp.day_of_week,
-            //                    disp.start_hour,
-            //                    disp.end_hour`;
-            // queryFrom += ` JOIN disponibilities disp ON u.id = disp.user_id`;
             if (queryWhere == "") {
                 queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek}) 
                                 AND disp.start_hour BETWEEN $1 AND $2
@@ -273,9 +271,6 @@ const getUserWithFilter = async (body) => {
 
         if (body.hasOwnProperty("professions")) {
             if (body.professions.length > 0) {
-                querySelect += `, prof.name AS professions`;
-                queryFrom += ` JOIN users_professions usp ON u.id = usp.user_id
-                JOIN professions prof ON usp.profession_id = prof.id`;
 
                 if (queryWhere == "") {
                     queryWhere += `WHERE usp.profession_id IN(${userProfessions})`;
@@ -310,7 +305,7 @@ const getUserWithFilter = async (body) => {
             commune: res.data[0].commune,
             phone: res.data[0].phone,
             email: res.data[0].email,
-            professions: res.data[0].professions.split(','),
+            professions: res.data[0].professions ? res.data[0].professions.split(',') : res.data[0].professions,
             disponibilities: _.chain(res.data.map((disp, i) => ({
                 dayOfWeek: disp.day_of_week,
                 hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
