@@ -210,6 +210,7 @@ const getUserWithFilter = async (body) => {
     let communes = "";
     let daysOfWeek = "";
     let userProfessions = "";
+    let values = [];
 
     if (body.hasOwnProperty("communes")) {
         communes = body.communes.join(', ');
@@ -232,9 +233,13 @@ const getUserWithFilter = async (body) => {
                                u.last_names,
                                u.commune_id,
                                u.phone,
-                               u.email`;
+                               u.email,disp.id AS disp_id,
+                               disp.day_of_week,
+                               disp.start_hour,
+                               disp.end_hour`;
 
-        let queryFrom = ` FROM users u`;
+        let queryFrom = ` FROM users u
+                          JOIN disponibilities disp ON u.id = disp.user_id`;
         let queryWhere = ``;
 
         if (body.hasOwnProperty("communes")) {
@@ -248,92 +253,70 @@ const getUserWithFilter = async (body) => {
         }
 
         if (body.hasOwnProperty("daysOfWeek")) {
-            querySelect += `,  disp.id AS disp_id,
-                               disp.day_of_week,
-                               disp.start_hour,
-                               disp.end_hour`;
-            queryFrom += ` JOIN disponibilities disp ON u.id = disp.user_id`;
+            values.push(body.startHour);
+            values.push(body.endHour);
+            // querySelect += `,  disp.id AS disp_id,
+            //                    disp.day_of_week,
+            //                    disp.start_hour,
+            //                    disp.end_hour`;
+            // queryFrom += ` JOIN disponibilities disp ON u.id = disp.user_id`;
             if (queryWhere == "") {
-                queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek})`;
+                queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek}) 
+                                AND disp.start_hour BETWEEN $1 AND $2
+                                AND disp.end_hour BETWEEN $1 AND $2`;
             } else {
-                queryWhere += ` AND disp.day_of_week IN (${daysOfWeek})`;
+                queryWhere += ` AND disp.day_of_week IN (${daysOfWeek}) 
+                                AND disp.start_hour BETWEEN $1 AND $2
+                                AND disp.end_hour BETWEEN $1 AND $2`;
             }
         }
 
         if (body.hasOwnProperty("professions")) {
-            querySelect += `,  prof.name AS professions`;
+            querySelect += `, prof.name AS professions`;
             queryFrom += ` JOIN users_professions usp ON u.id = usp.user_id
-                           JOIN professions prof ON usp.profession_id = prof.id`;
+                JOIN professions prof ON usp.profession_id = prof.id`;
 
             if (queryWhere == "") {
-                queryWhere += `WHERE usp.profession_id IN (${userProfessions})`;
+                queryWhere += `WHERE usp.profession_id IN(${userProfessions})`;
             } else {
-                queryWhere += `AND usp.profession_id IN (${userProfessions})`;
+                queryWhere += `AND usp.profession_id IN(${userProfessions})`;
             }
 
         }
+
+        console.log(values);
 
         let query = querySelect + queryFrom + queryWhere;
 
         console.log(query);
 
-        let { rows } = await connection.query(query);
-
-        return rows;
-
-
-        // const query = `
-        //                 SELECT u.id AS user_id,
-        //                        u.rut,
-        //                        u.names,
-        //                        u.last_names,
-        //                        u.commune_id,
-        //                        comm.name AS commune,
-        //                        u.phone,
-        //                        u.email,
-        //                        prof.name AS professions,
-        //                        disp.id AS disp_id,
-        //                        disp.day_of_week,
-        //                        disp.start_hour,
-        //                        disp.end_hour,
-        //                        prof.name AS profession_name
-        //                 FROM users u
-        //                 JOIN users_professions usp ON u.id = usp.user_id
-        //                 JOIN disponibilities disp ON u.id = disp.user_id
-        //                 JOIN professions prof ON usp.profession_id = prof.id
-        //                 JOIN communes comm ON u.commune_id = comm.id
-        //                 WHERE u.commune_id IN (${communes})
-        //                 AND disp.day_of_week IN (${daysOfWeek})
-        //                 AND usp.profession_id IN (${userProfessions})
-        //                 AND disp.start_hour BETWEEN $1 AND $2
-        //                 AND disp.end_hour BETWEEN $1 AND $2`;
+        let { rows } = await connection.query(query, values);
+        console.log(rows);
 
 
-        // let { rows } = await connection.query(query, [body.startHour, body.endHour]);
-
-        // let result = _.chain(rows).groupBy('user_id').map((data, key) => ({
-        //     data
-        // }))
+        let result = _.chain(rows).groupBy('user_id').map((data, key) => ({
+            data
+        }))
 
 
-        // let response = result.map((res, index) => ({
-        //     user_id: res.data[0].user_id,
-        //     rut: res.data[0].rut,
-        //     names: res.data[0].names,
-        //     lastNames: res.data[0].last_names,
-        //     communeId: res.data[0].commune_id,
-        //     commune: res.data[0].commune,
-        //     phone: res.data[0].phone,
-        //     email: res.data[0].email,
-        //     professions: res.data[0].professions.split(','),
-        //     disponibilities: _.chain(res.data.map((disp, i) => ({
-        //         dayOfWeek: disp.day_of_week,
-        //         hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
-        //             .map(e => `${e.start_hour} - ${e.end_hour}`)
-        //     }))).uniqBy("dayOfWeek")
-        // }))
+        let response = result.map((res, index) => ({
+            user_id: res.data[0].user_id,
+            rut: res.data[0].rut,
+            names: res.data[0].names,
+            lastNames: res.data[0].last_names,
+            communeId: res.data[0].commune_id,
+            commune: res.data[0].commune,
+            phone: res.data[0].phone,
+            email: res.data[0].email,
+            professions: res.data[0].professions.split(','),
+            disponibilities: _.chain(res.data.map((disp, i) => ({
+                dayOfWeek: disp.day_of_week,
+                hours: res.data.filter(x => x.day_of_week === disp.day_of_week && x.user_id === disp.user_id)
+                    .map(e => `${e.start_hour} - ${e.end_hour} `)
+            })))
+        }))
 
-        // return response
+        return response
 
 
     } catch (error) {
