@@ -257,19 +257,24 @@ const getUserWithFilter = async (body) => {
 
         if (body.hasOwnProperty("daysOfWeek")) {
             if (body.daysOfWeek.length > 0) {
-                values.push(body.startHour);
-                values.push(body.endHour);
                 if (queryWhere == "") {
-                    queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek}) 
-                                    AND disp.start_hour BETWEEN $1 AND $2
-                                    AND disp.end_hour BETWEEN $1 AND $2`;
+                    queryWhere += ` WHERE disp.day_of_week IN (${daysOfWeek})`;
+
                 } else {
-                    queryWhere += ` AND disp.day_of_week IN (${daysOfWeek}) 
-                                    AND disp.start_hour BETWEEN $1 AND $2
-                                    AND disp.end_hour BETWEEN $1 AND $2`;
+                    queryWhere += ` AND disp.day_of_week IN (${daysOfWeek}) `;
+                }
+
+                if (body.startHour && body.endHour) {
+                    // if (body.startHour.length > 0 && body.endtHour.length > 0) {
+                    values.push(body.startHour);
+                    values.push(body.endHour);
+                    queryWhere += ` AND disp.start_hour BETWEEN $1 AND $2
+                                        AND disp.end_hour BETWEEN $1 AND $2`;
+                    // }
                 }
             }
         }
+
 
         if (body.hasOwnProperty("professions")) {
             if (body.professions.length > 0) {
