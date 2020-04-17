@@ -265,12 +265,20 @@ const getUserWithFilter = async (body) => {
                 }
 
                 if (body.startHour && body.endHour) {
-                    // if (body.startHour.length > 0 && body.endtHour.length > 0) {
                     values.push(body.startHour);
                     values.push(body.endHour);
                     queryWhere += ` AND disp.start_hour BETWEEN $1 AND $2
-                                        AND disp.end_hour BETWEEN $1 AND $2`;
-                    // }
+                                    AND disp.end_hour BETWEEN $1 AND $2`;
+                } else {
+                    if (body.startHour) {
+                        values.push(body.startHour);
+                        queryWhere += ` AND disp.start_hour BETWEEN $1 AND '1:00'`;
+                    }
+
+                    if (body.endHour) {
+                        values.push(body.endHour);
+                        queryWhere += ` AND disp.end_hour BETWEEN '6:00' AND $1`;
+                    }
                 }
             }
         }
