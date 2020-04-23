@@ -138,9 +138,15 @@ router.get('/getInfo', async (req, res) => {
 
 router.post('/getUsersByFilters', async (req, res) => {
     try {
-
         const { body } = req;
-        const result = await userModel.getUserWithFilter(body);
+
+        let page = undefined;
+
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+        const result = await userModel.getUserWithFilter(body, page);
         res.status(200).send(result);
 
     } catch (error) {

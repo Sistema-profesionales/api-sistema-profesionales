@@ -40,9 +40,15 @@ const validator = {
     }
 }
 
+const paginate = (array, limit, offset) => {
+    // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+    return array.slice((offset - 1) * limit, offset * limit);
+}
+
 
 module.exports = {
     camel,
     hasNumber,
-    validator
+    validator,
+    paginate
 }

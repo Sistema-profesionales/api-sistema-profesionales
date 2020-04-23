@@ -1,5 +1,5 @@
 const { connecting } = require('./connect');
-const { camel } = require('../helpers/utils/utilitiesFuctions');
+const { camel, paginate } = require('../helpers/utils/utilitiesFuctions');
 const _ = require('lodash');
 
 const save = async (user) => {
@@ -204,8 +204,11 @@ const getByLogin = async (login) => {
     }
 }
 
-const getUserWithFilter = async (body) => {
+
+const getUserWithFilter = async (body, page) => {
     const connection = await connecting();
+
+    let usersPerPage = 1;
 
     let communes = "";
     let daysOfWeek = "";
@@ -244,6 +247,7 @@ const getUserWithFilter = async (body) => {
                           JOIN users_professions usp ON u.id = usp.user_id
                           JOIN professions prof ON usp.profession_id = prof.id`;
         let queryWhere = ``;
+
 
         if (body.hasOwnProperty("communes")) {
             querySelect += `,  comm.name AS commune`;
@@ -303,7 +307,6 @@ const getUserWithFilter = async (body) => {
         console.log(query);
 
         let { rows } = await connection.query(query, values);
-        console.log(rows);
 
 
         let result = _.chain(rows).groupBy('user_id').map((data, key) => ({
@@ -327,6 +330,10 @@ const getUserWithFilter = async (body) => {
                     .map(e => `${e.start_hour} - ${e.end_hour} `)
             })))
         }))
+
+        // queryLimit = ` LIMIT ${usersPerPage} OFFSET  (${(page - 1) * usersPerPage})`;
+
+        if (page != undefined) response = paginate(response, usersPerPage, page);
 
         return response
 
