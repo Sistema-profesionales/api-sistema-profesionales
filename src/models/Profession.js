@@ -36,6 +36,7 @@ const save = async (profession) => {
 
             const result = await connection.query(query, [profession]);
             let data = result.rows[0];
+
             return data ? camel(data) : null;
         } else {
             console.log(dataProfession);
