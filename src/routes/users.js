@@ -136,6 +136,9 @@ router.get('/getInfo', async (req, res) => {
     }
 });
 
+/**
+ * Obtiene los usuarios por filtro.
+ */
 router.post('/getUsersByFilters', async (req, res) => {
     try {
         const { body } = req;
@@ -160,6 +163,9 @@ router.post('/getUsersByFilters', async (req, res) => {
     }
 })
 
+/**
+ * Obtiene usuario por id
+ */
 router.get('/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
@@ -173,6 +179,9 @@ router.get('/:id', async (req, res) => {
     }
 })
 
+/**
+ * Registra usuario
+ */
 router.post('/', async (req, res) => {
     try {
         let { body } = req;
@@ -246,6 +255,9 @@ router.post('/', async (req, res) => {
     }
 });
 
+/**
+ * Validacion de usuario
+ */
 router.post('/validateUser', async (req, res) => {
     try {
         const { body } = req;
@@ -265,6 +277,9 @@ router.post('/validateUser', async (req, res) => {
     }
 });
 
+/**
+ * Elimina usuario por id
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
@@ -278,6 +293,9 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+/**
+ * Login de usuario
+ */
 router.post('/login', async (req, res) => {
     try {
         const { userRutOrEmail, password } = req.body;
