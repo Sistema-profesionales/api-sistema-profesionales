@@ -208,7 +208,7 @@ const getByLogin = async (login) => {
 const getUserWithFilter = async (body, page) => {
     const connection = await connecting();
 
-    let usersPerPage = 1;
+    let usersPerPage = 2;
 
     let communes = "";
     let daysOfWeek = "";
