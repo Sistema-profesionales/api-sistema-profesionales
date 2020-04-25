@@ -72,7 +72,7 @@ router.get('/getInfo', async (req, res) => {
 
                 const names = fullname.split(',')[1]
                 const lastNames = fullname.split(',')[0]
-                const professions = [title];
+                const professions = title;
 
                 const urlHash = await page.evaluate(() => {
                     return document.querySelector('table tr:nth-child(2) td a').href;
