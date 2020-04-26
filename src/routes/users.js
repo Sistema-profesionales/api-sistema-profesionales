@@ -11,7 +11,6 @@ const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer')
 const fs = require('fs');
 let urlOfCert = "";
-let _ = require('lodash');
 
 /**
  * Obtiene todos los usuarios en el sistema.
@@ -162,6 +161,7 @@ router.post('/getUsersByFilters', async (req, res) => {
         }
 
         const result = await userModel.getUserWithFilter(body, page, usersPerPage);
+
         res.status(200).send(result);
 
     } catch (error) {

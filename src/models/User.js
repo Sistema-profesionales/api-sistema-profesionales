@@ -303,10 +303,8 @@ const getUserWithFilter = async (body, page, usersCount) => {
                     queryWhere += `AND usp.profession_id IN(${userProfessions})`;
                 }
             }
-
         }
 
-        console.log(values);
 
         let query = querySelect + queryFrom + queryWhere;
 
@@ -317,7 +315,8 @@ const getUserWithFilter = async (body, page, usersCount) => {
 
         let result = _.chain(rows).groupBy('user_id').map((data, key) => ({
             data
-        }))
+        })).value()
+
 
 
         let response = result.map((res, index) => ({
@@ -337,11 +336,12 @@ const getUserWithFilter = async (body, page, usersCount) => {
             })))
         }))
 
-        // queryLimit = ` LIMIT ${usersPerPage} OFFSET  (${(page - 1) * usersPerPage})`;
+        let countResult = result[0].data.length;
 
         if (page != undefined) response = paginate(response, usersPerPage, page);
 
-        return response
+
+        return { response, countResult };
 
 
     } catch (error) {
