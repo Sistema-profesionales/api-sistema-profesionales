@@ -8,6 +8,7 @@ const validatorUser = require('../helpers/validators/user');
 const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
+const nodemailer = require('nodemailer')
 const fs = require('fs');
 let urlOfCert = "";
 let _ = require('lodash');
@@ -32,12 +33,18 @@ router.get('/getInfo', async (req, res) => {
     try {
         if (req.query) {
             let rut = req.query.rut;
+
             const errors = validatorUser.validateRut(rut);
 
             if (errors) {
                 res.status(400).send(errors);
                 return;
             }
+
+            //check if user exists
+            const userRut = await userModel.checkIfRutExist({ rut: rut });
+            if (userRut) return res.status(409).send({ "user": [`El rut ${rut} ya se encuentra registrado`] });
+
 
             const rutOk = rut.split('-')[0];
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
@@ -195,7 +202,6 @@ router.post('/', async (req, res) => {
 
         //check if user exists
         const userRut = await userModel.checkIfRutExist(body);
-
         if (userRut) return res.status(409).send({ "user": [`El rut ${body.rut} ya se encuentra registrado`] });
 
         const userEmail = await userModel.checkIfEmailExist(body);
