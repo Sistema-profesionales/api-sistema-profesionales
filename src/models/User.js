@@ -308,7 +308,7 @@ const getUserWithFilter = async (body, page, usersCount) => {
 
         let query = querySelect + queryFrom + queryWhere;
 
-        console.log(query);
+        // console.log(query);
 
         let { rows } = await connection.query(query, values);
 
@@ -336,7 +336,9 @@ const getUserWithFilter = async (body, page, usersCount) => {
             })))
         }))
 
-        let countResult = result[0].data.length;
+        let countResult = response.length;
+
+        // console.log(response);
 
         if (page != undefined) response = paginate(response, usersPerPage, page);
 
