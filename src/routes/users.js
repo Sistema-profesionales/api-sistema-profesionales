@@ -209,7 +209,6 @@ router.post('/', async (req, res) => {
         const newUser = await userModel.save(body);
 
         if (body.professions) {
-            body.professions = body.professions.split(',');
             for (let i = 0; i < body.professions.length; i++) {
                 const result = await professionModel.save(body.professions[i]);
                 if (result) {

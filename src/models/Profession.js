@@ -24,12 +24,12 @@ const save = async (profession) => {
     const connection = await connecting();
 
     try {
-        const queryProfession = 'SELECT * FROM professions_dev WHERE name = $1';
+        const queryProfession = 'SELECT * FROM professions WHERE name = $1';
         const resultProfession = await connection.query(queryProfession, [profession]);
         let dataProfession = resultProfession.rows[0];
 
         if (!dataProfession) {
-            const query = `INSERT INTO professions_dev
+            const query = `INSERT INTO professions
                       (name)
                       VALUES ($1)
                       RETURNING *`;
