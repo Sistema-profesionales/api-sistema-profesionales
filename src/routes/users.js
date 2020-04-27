@@ -187,6 +187,25 @@ router.get('/:id', async (req, res) => {
 })
 
 /**
+ * Checkea step de registro de usuarios
+ */
+router.post('/checkData', async (req, res) => {
+    try {
+        let { body } = req;
+        const errors = validatorUser.save(body);
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        } else {
+            res.status(200).send("Ok");
+        }
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
+
+/**
  * Registra usuario
  */
 router.post('/', async (req, res) => {
