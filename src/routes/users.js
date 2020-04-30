@@ -41,8 +41,8 @@ router.get('/getInfo', async (req, res) => {
             }
 
             //check if user exists
-            const userRut = await userModel.checkIfRutExist({ rut: rut });
-            if (userRut) return res.status(409).send({ "user": [`El rut ${rut} ya se encuentra registrado`] });
+            // const userRut = await userModel.checkIfRutExist({ rut: rut });
+            // if (userRut) return res.status(409).send({ "user": [`El rut ${rut} ya se encuentra registrado`] });
 
 
             const rutOk = rut.split('-')[0];
@@ -120,7 +120,7 @@ router.get('/getInfo', async (req, res) => {
 
                     const names = fullname.split(',')[1]
                     const lastNames = fullname.split(',')[0]
-                    const professions = [title];
+                    const professions = title;
 
                     const urlHash = await page.evaluate(() => {
                         return document.querySelector('table tr:nth-child(2) td a').href;
