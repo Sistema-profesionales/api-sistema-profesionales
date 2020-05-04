@@ -74,7 +74,7 @@ router.delete('/:userId/:dayOfWeek', async (req, res) => {
         const dayOfWeek = req.params.dayOfWeek;
 
         const deletedDisp = await disponibilityModel.deletedDisponibilities(userId, dayOfWeek);
-        res.status(deletedDisponibilities).send(deletedDisp);
+        res.status(202).send(deletedDisp);
     } catch (error) {
         res.status(500).send(error);
     }
