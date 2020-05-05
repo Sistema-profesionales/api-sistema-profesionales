@@ -5,10 +5,10 @@ const userModel = require('../models/User');
 const professionModel = require('../models/Profession');
 const specialitynModel = require('../models/Speciality');
 const validatorUser = require('../helpers/validators/user');
+const { sendingEmail } = require('../helpers/utils/nodemailerConfig');
 const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
-const nodemailer = require('nodemailer')
 const fs = require('fs');
 let urlOfCert = "";
 
@@ -20,6 +20,23 @@ router.get('/', async (req, res) => {
         const users = await userModel.getAll();
 
         res.status(200).send(users);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+router.get('/sendingEmail', async (req, res) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_PASSWORD, // sender address
+            to: 'iggnaxios@gmail.com', // list of receivers
+            subject: 'Hola Mundo separated', // Subject line
+            html: '<p>Your html here dsfdsfs</p>'// plain text body
+        };
+
+        sendingEmail(mailOptions);
+
+        res.send("ok email enviado");
     } catch (error) {
         res.status(500).send(error);
     }
