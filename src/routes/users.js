@@ -25,22 +25,22 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/sendingEmail', async (req, res) => {
-    try {
-        const mailOptions = {
-            from: process.env.EMAIL_PASSWORD, // sender address
-            to: 'iggnaxios@gmail.com', // list of receivers
-            subject: 'Hola Mundo separated', // Subject line
-            html: '<p>Your html here dsfdsfs</p>'// plain text body
-        };
+// router.get('/sendingEmail', async (req, res) => {
+//     try {
+//         const mailOptions = {
+//             from: process.env.EMAIL_PASSWORD, // sender address
+//             to: 'iggnaxios@gmail.com', // list of receivers
+//             subject: 'Hola Mundo separated', // Subject line
+//             html: '<p>Your html here dsfdsfs</p>'// plain text body
+//         };
 
-        sendingEmail(mailOptions);
+//         sendingEmail(mailOptions);
 
-        res.send("ok email enviado");
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
+//         res.send("ok email enviado");
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
 
 /**
  * Scrapping para obtener la info del rut ingresado.
@@ -288,6 +288,21 @@ router.post('/', async (req, res) => {
             height: 780,
         });
         await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion.png` });
+
+        try {
+            const mailOptions = {
+                from: process.env.EMAIL, // sender address
+                to: body.email, // list of receivers
+                subject: 'Bienvenido a Sistema de profesionales', // Subject line
+                html: '<p>Your html here :D</p>'// plain text body
+            };
+
+            sendingEmail(mailOptions);
+
+            // res.send("ok email enviado");
+        } catch (error) {
+            res.status(500).send(error);
+        }
 
         res.status(201).send(newUser);
 
