@@ -87,9 +87,21 @@ const getById = async (id) => {
     const connection = await connecting();
 
     try {
-        const query = `SELECT *
-                       FROM users
-                       WHERE id = $1`;
+        const query = `SELECT u.*, 
+                              c.name AS commune_name,
+                              p.name as province_name, 
+                              r.name AS region_name,
+                              prf.name AS profession_name,
+                              sp.name AS speciality_name
+                       FROM users u
+                       JOIN communes c ON u.commune_id = c.id
+                       JOIN provinces p ON c.province_id = p.id
+                       JOIN regions r ON p.region_id = r.id
+                       JOIN users_professions upf ON u.id = upf.user_id
+                       JOIN professions prf ON upf.profession_id = prf.id
+                       JOIN users_specialities usp ON u.id = usp.user_id
+                       JOIN specialities sp ON usp.speciality_id = sp.id
+                       WHERE u.id = $1`;
 
         const result = await connection.query(query, [id]);
         let data = result.rows[0] || null;
@@ -352,6 +364,18 @@ const getUserWithFilter = async (body, page, usersCount) => {
         connection.release();
     }
 }
+
+// const getInfoUser = async (idUser) => {
+//     const connection = await connecting();
+
+//     try {
+//         const query = `SELECT `;
+//     } catch (error) {
+//         throw { error }
+//     } finally {
+//         connection.release();
+//     }
+// }
 
 module.exports = {
     save,

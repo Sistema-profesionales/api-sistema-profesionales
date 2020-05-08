@@ -31,11 +31,7 @@ router.get('/sendingEmail', async (req, res) => {
             from: process.env.EMAIL_PASSWORD, // sender address
             to: 'iggnaxios@gmail.com', // list of receivers
             subject: 'Hola Mundo separated', // Subject line
-            template: '../../templates/welcomeNewUser.html',
-            context: {                  // <=
-                username: "naaaanika",
-                whatever: "holaa mundo"
-            }
+            html: '<p>Your html here dsfdsfs</p>'// plain text body
         };
 
         sendingEmail(mailOptions);
