@@ -14,7 +14,7 @@ const save = async (body) => {
         const result = await connection.query(query, values);
 
         const data = result.rows[0];
-        console.log(data);
+        // console.log(data);
         return data ? camel(data) : null;
 
     } catch (error) {

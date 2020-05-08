@@ -5,6 +5,26 @@ router.post('/', async (req, res) => {
     try {
         const { body } = req;
 
+        const disponibilities = await disponibilityModel.getByUserAndDay(body.userId, body.dayOfWeek);
+
+        if(!body.startHour || !body.endHour || body.startHour === "" || body.endHour === "") {
+            return res.status(400).send({ message: [`Por favor indica las horas de inicio y termino`] });
+        }
+
+        let bodyStartHour = parseInt(body.startHour.replace(":", ""));
+        let bodyEndHour = parseInt(body.endHour.replace(":", ""));
+
+        if(bodyStartHour > bodyEndHour) {
+            return res.status(400).send({ message: [`La hora de inicio debe ser mayor a la de termino`] });
+        }
+
+        if(disponibilities.length > 0) {
+            let endHour = disponibilities[disponibilities.length - 1];
+            let formatBodyHour = parseInt(body.startHour.replace(":", ""));
+            let formatHourBD = parseInt(endHour.endHour.replace(":", ""));
+            if(formatBodyHour < formatHourBD) return res.status(400).send({ message: [`La nueva hora no puede coincidir con el intervalo de horas ya registradas`] });
+        }
+
         const disponibility = await disponibilityModel.save(body);
 
         res.status(201).send(disponibility);
