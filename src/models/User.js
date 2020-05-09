@@ -93,9 +93,13 @@ const getById = async (id) => {
                               p.name as province_name, 
                               r.name AS region_name,
                               ARRAY(SELECT name from professions proff 
-                                INNER JOIN users_professions upf ON proff.id = upf.profession_id WHERE upf.user_id = $1
+                                INNER JOIN users_professions upf ON proff.id = upf.profession_id 
+                                WHERE upf.user_id = $1
                                 GROUP BY proff.id) AS professions,
-                              sp.name AS specialities
+                              ARRAY(SELECT name FROM specialities sp
+                                INNER JOIN users_specialities usp ON sp.id = usp.speciality_id
+                                WHERE usp.user_id = $1
+                                GROUP BY sp.id) AS specialities
                        FROM users u
                        LEFT OUTER JOIN communes c ON u.commune_id = c.id
                        LEFT OUTER JOIN provinces p ON c.province_id = p.id
