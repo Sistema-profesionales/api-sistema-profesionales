@@ -8,8 +8,9 @@ const validatorUser = require('../helpers/validators/user');
 const { sendingEmail } = require('../helpers/utils/nodemailerConfig');
 const bcrypt = require('bcryptjs');
 const puppeteer = require('puppeteer');
-const hbs = require('nodemailer-express-handlebars');
+const ejs = require('ejs');
 const fs = require('fs');
+const path = require('path');
 let urlOfCert = "";
 
 /**
@@ -27,16 +28,18 @@ router.get('/', async (req, res) => {
 
 router.get('/sendingEmail', async (req, res) => {
     try {
+        const data = await ejs.renderFile(path.join(__dirname, "../templates/welcome.ejs"), { name: 'Stranger' });
+
         const mailOptions = {
             from: process.env.EMAIL_PASSWORD, // sender address
             to: 'iggnaxios@gmail.com', // list of receivers
             subject: 'Hola Mundo separated', // Subject line
-            html: '<p>Your html here dsfdsfs</p>'// plain text body
+            html: data
         };
 
         sendingEmail(mailOptions);
 
-        res.send("ok email enviado");
+        res.send("ok email enviado :DD");
     } catch (error) {
         res.status(500).send(error);
     }
@@ -195,7 +198,7 @@ router.get('/:id', async (req, res) => {
         const id = parseInt(req.params.id);
         const user = await userModel.getById(id);
 
-        if (!user) return res.status(404).send({ "user": [`El usuario con id ${id} no existe`] });
+        // if (!user) return res.status(404).send({ "user": [`El usuario con id ${id} no existe`] });
 
         res.status(200).send(user);
     } catch (error) {

@@ -86,30 +86,33 @@ const getAll = async () => {
 const getById = async (id) => {
     const connection = await connecting();
 
+
     try {
-        const query = `SELECT u.*, 
+        const query = `SELECT  u.*, 
                               c.name AS commune_name,
                               p.name as province_name, 
                               r.name AS region_name,
-                              prf.name AS profession_name,
-                              sp.name AS speciality_name
+                              ARRAY(SELECT name from professions proff 
+                                INNER JOIN users_professions upf ON proff.id = upf.profession_id WHERE upf.user_id = $1
+                                GROUP BY proff.id) AS professions,
+                              sp.name AS specialities
                        FROM users u
-                       JOIN communes c ON u.commune_id = c.id
-                       JOIN provinces p ON c.province_id = p.id
-                       JOIN regions r ON p.region_id = r.id
-                       JOIN users_professions upf ON u.id = upf.user_id
-                       JOIN professions prf ON upf.profession_id = prf.id
-                       JOIN users_specialities usp ON u.id = usp.user_id
-                       JOIN specialities sp ON usp.speciality_id = sp.id
+                       LEFT OUTER JOIN communes c ON u.commune_id = c.id
+                       LEFT OUTER JOIN provinces p ON c.province_id = p.id
+                       LEFT OUTER JOIN regions r ON p.region_id = r.id
+                       LEFT OUTER JOIN users_specialities usp ON u.id = usp.user_id
+                       LEFT OUTER JOIN specialities sp ON usp.speciality_id = sp.id
                        WHERE u.id = $1`;
 
         const result = await connection.query(query, [id]);
+        console.log(result.rows);
+
         let data = result.rows[0] || null;
         if (data) delete data.password;
         return data ? camel(data) : null;
 
     } catch (error) {
-        throw { error };
+        console.log(error);
     } finally {
         connection.release();
     }
@@ -365,17 +368,6 @@ const getUserWithFilter = async (body, page, usersCount) => {
     }
 }
 
-// const getInfoUser = async (idUser) => {
-//     const connection = await connecting();
-
-//     try {
-//         const query = `SELECT `;
-//     } catch (error) {
-//         throw { error }
-//     } finally {
-//         connection.release();
-//     }
-// }
 
 module.exports = {
     save,
