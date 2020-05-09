@@ -198,7 +198,7 @@ router.get('/:id', async (req, res) => {
         const id = parseInt(req.params.id);
         const user = await userModel.getById(id);
 
-        // if (!user) return res.status(404).send({ "user": [`El usuario con id ${id} no existe`] });
+        if (!user) return res.status(404).send({ "user": [`El usuario con id ${id} no existe`] });
 
         res.status(200).send(user);
     } catch (error) {
@@ -238,6 +238,7 @@ router.post('/', async (req, res) => {
             res.status(400).send(errors);
             return;
         }
+
 
         //check if user exists
         const userRut = await userModel.checkIfRutExist(body);
@@ -282,7 +283,7 @@ router.post('/', async (req, res) => {
         }
 
         if (!fs.existsSync(`./src/docs/${body.rut}`)) {
-            fs.mkdirSync(`./src/docs/${body.rut}`); //HERE I AM
+            fs.mkdirSync(`./src/docs/${body.rut}`);
             console.log("folder creada 2");
         }
 
@@ -292,12 +293,15 @@ router.post('/', async (req, res) => {
         });
         await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion.png` });
 
+
         try {
+            const data = await ejs.renderFile(path.join(__dirname, "../templates/welcome.ejs"), { name: body.names });
+
             const mailOptions = {
                 from: process.env.EMAIL, // sender address
                 to: body.email, // list of receivers
-                subject: 'Bienvenido a Sistema de profesionales', // Subject line
-                html: '<p>Your html here :D</p>'// plain text body
+                subject: 'Bienvenido a Sistema de Reemplazos', // Subject line
+                html: data
             };
 
             sendingEmail(mailOptions);
