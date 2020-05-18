@@ -121,13 +121,13 @@ const deletedDisponibilities = async (userId, dayOfWeek) => {
                        RETURNING *`;
 
         const result = await connection.query(query, [userId, dayOfWeek]);
-        // let data = result.rows;
+        let data = result.rows;
 
-        // for (let i = 0; i < data.length; i++) {
-        //     data[i] = camel(data[i]);
-        // }
+        for (let i = 0; i < data.length; i++) {
+            data[i] = camel(data[i]);
+        }
 
-        return result.rows;
+        return data;
 
     } catch (error) {
         throw { error }
