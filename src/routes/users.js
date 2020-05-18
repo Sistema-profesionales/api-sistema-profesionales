@@ -61,9 +61,8 @@ router.get('/getInfo', async (req, res) => {
             }
 
             //check if user exists
-            // const userRut = await userModel.checkIfRutExist({ rut: rut });
-            // if (userRut) return res.status(409).send({ "user": [`El rut ${rut} ya se encuentra registrado`] });
-
+            const userRut = await userModel.checkIfRutExist({ rut: rut });
+            if (userRut) return res.status(409).send({ "user": [`El rut ${rut} ya se encuentra registrado`] });
 
             const rutOk = rut.split('-')[0];
             const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
