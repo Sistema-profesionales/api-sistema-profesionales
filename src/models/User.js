@@ -122,7 +122,6 @@ const getById = async (id) => {
     }
 }
 
-
 const checkIfRutExist = async (user) => {
     const connection = await connecting();
     try {
@@ -167,7 +166,6 @@ const checkIfEmailExist = async (user) => {
     }
 }
 
-
 const remove = async (id) => {
     const connection = await connecting();
 
@@ -188,19 +186,6 @@ const remove = async (id) => {
         connection.release();
     }
 
-}
-
-const updateById = async (id, user) => {
-    const connection = await connecting();
-
-    try {
-        const query = `UPDATE users
-                       SET `
-    } catch (error) {
-        throw { error };
-    } finally {
-        connection.release();
-    }
 }
 
 const getByLogin = async (login) => {
@@ -372,17 +357,37 @@ const getUserWithFilter = async (body, page, usersCount) => {
     }
 }
 
+const updateUser = async (idUser, body) => {
+    const connection = await connecting();
+    try {
+
+        const query = `UPDATE users 
+                       SET names = ${body.names}
+                       WHERE id = ${idUser}`;
+
+
+        const result = await connection.query(query);
+        let data = result.rows[0];
+
+        return data ? camel(data) : null;
+    } catch (error) {
+        console.log(error);
+    } finally {
+        connection.release();
+    }
+}
+
 
 module.exports = {
     save,
     getAll,
     getById,
     remove,
-    updateById,
     insertUserProfession,
     insertUserSpeciality,
     checkIfRutExist,
     checkIfEmailExist,
     getByLogin,
-    getUserWithFilter
+    getUserWithFilter,
+    updateUser
 }

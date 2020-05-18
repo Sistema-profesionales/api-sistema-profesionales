@@ -388,7 +388,25 @@ router.post('/login', async (req, res) => {
         console.log(error);
         res.status(500).send(error);
     }
-})
+});
+
+/** Update de datos de usuarios */
+router.put('/:id', async (req, res) => {
+    try {
+        const idUser = parseInt(req.params.id);
+        const user = await userModel.getById(idUser);
+
+        if (!user) return res.status(404).send({ "user": [`El usuario con id ${idUser} no existe`] });
+
+        const { body } = req;
+
+        const userUpdated = await userModel.updateUser(idUser, body);
+
+        res.status(200).send(userUpdated);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
 module.exports = router;
 
