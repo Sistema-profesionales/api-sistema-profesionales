@@ -361,9 +361,40 @@ const updateUser = async (idUser, body) => {
     const connection = await connecting();
     try {
 
+        let queryToUpdate = "";
+
+        if (body.hasOwnProperty('names')) {
+            queryToUpdate = ` SET names = '${body.names}' `;
+        }
+
+        if (body.hasOwnProperty('lastNames')) {
+            queryToUpdate = ` SET last_names = '${body.lastNames}' `;
+        }
+
+        if (body.hasOwnProperty('entityId')) {
+            queryToUpdate = ` SET entity_id = '${body.entityId}' `;
+        }
+
+        if (body.hasOwnProperty('commune_id')) {
+            queryToUpdate = ` SET commune_id = '${body.communeId}' `;
+        }
+
+        if (body.hasOwnProperty('phone')) {
+            queryToUpdate = ` SET phone = '${body.phone}' `;
+        }
+
+        if (body.hasOwnProperty('email')) {
+            queryToUpdate = ` SET email = '${body.email}' `;
+        }
+
+        if (body.hasOwnProperty('premium')) {
+            queryToUpdate = ` SET premium = '${body.premium}' `;
+        }
+
         const query = `UPDATE users 
-                       SET names = ${body.names}
-                       WHERE id = ${idUser}`;
+                       ${queryToUpdate}
+                       WHERE id = ${idUser}
+                       RETURNING *`;
 
 
         const result = await connection.query(query);
@@ -371,7 +402,7 @@ const updateUser = async (idUser, body) => {
 
         return data ? camel(data) : null;
     } catch (error) {
-        console.log(error);
+        throw { error };
     } finally {
         connection.release();
     }

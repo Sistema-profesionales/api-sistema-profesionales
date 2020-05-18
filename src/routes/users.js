@@ -402,6 +402,7 @@ router.put('/:id', async (req, res) => {
         const userUpdated = await userModel.updateUser(idUser, body);
 
         res.status(200).send(userUpdated);
+
     } catch (error) {
         res.status(500).send(error);
     }
