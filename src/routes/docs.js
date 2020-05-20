@@ -8,9 +8,13 @@ router.get('/:rut', async (req, res) => {
         const rut = req.params.rut;
         const folder = path.join(__dirname, `../docs/${rut}/`);
 
+        let files = [];
+
         fs.readdirSync(folder).forEach(file => {
-            console.log(file);
+            files.push(file);
         });
+
+        res.status(200).send(files);
     } catch (error) {
         res.status(500).send(error);
     }
