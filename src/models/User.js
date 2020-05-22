@@ -89,8 +89,11 @@ const getById = async (id) => {
 
     try {
         const query = `SELECT  u.*, 
+                              c.id AS commune_id,
                               c.name AS commune_name,
-                              p.name as province_name, 
+                              p.id AS province_id,
+                              p.name as province_name,
+                              r.id AS region_id,
                               r.name AS region_name,
                               ARRAY(SELECT name from professions proff 
                                 INNER JOIN users_professions upf ON proff.id = upf.profession_id 
