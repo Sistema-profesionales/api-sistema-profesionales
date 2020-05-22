@@ -4,7 +4,6 @@ const cors = require('cors')
 const morgan = require('morgan')
 const path = require('path')
 
-
 //config
 app.set('port', 3000 || process.env.PORT);
 
