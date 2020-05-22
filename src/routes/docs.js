@@ -22,7 +22,6 @@ router.get('/:rut', async (req, res) => {
     }
 });
 
-
 router.post('/upload/:folder', fileUpload(), async (req, res) => {
     try {
         const rut = req.params.folder;
@@ -58,11 +57,29 @@ router.post('/upload/:folder', fileUpload(), async (req, res) => {
 
                 res.status(200).send(`Archivo(s) subido(s) con exito`);
 
-
-
             } else {
                 //aca crear la carpeta
-                res.send("no existe folder");
+                fs.mkdirSync(path.join(__dirname, `../docs/${rut}`));
+
+                if (!req.files) return res.status(400).send(`Debes indicar el archivo que deseas subir`);
+
+                let filesUpload = req.files.file;
+
+                if (Array.isArray(filesUpload)) {
+                    for (let i = 0; i < filesUpload.length; i++) {
+                        if (fs.existsSync(`${resource}/${filesUpload[i].name}`)) {
+                            fs.unlinkSync(`${resource}/${filesUpload[i].name}`);
+                        }
+                        filesUpload[i].mv(`${resource}/${filesUpload[i].name}`);
+                    }
+                } else {
+                    if (fs.existsSync(`${resource}/${filesUpload.name}`)) {
+                        fs.unlinkSync(`${resource}/${filesUpload.name}`);
+                    }
+                    filesUpload.mv(`${resource}/${filesUpload.name}`);
+                }
+
+                res.status(200).send(`Archivo(s) subido(s) con exito`);
             }
         } else {
             res.status(404).send(`El usuario con rut ${rut} no existe.`);
