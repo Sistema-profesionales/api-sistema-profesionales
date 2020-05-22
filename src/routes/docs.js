@@ -72,7 +72,26 @@ router.post('/upload/:folder', fileUpload(), async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-})
+});
+
+router.delete('/deleteFile/:folder/:file', (req, res) => {
+    try {
+        const { folder, file } = req.params;
+
+        let resource = path.join(__dirname, `../docs/${folder}/${file}`);
+
+        let existsDirname = fs.existsSync(resource);
+
+        if (!existsDirname) return res.status(404).send(`El archivo ${file} no existe en /${folder}`);
+
+        fs.unlinkSync(`${resource}`);
+
+        res.status(200).send(`${file} ha sido eliminado de /${folder}`);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
+
 
 
 module.exports = router;
