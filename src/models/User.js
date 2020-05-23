@@ -434,7 +434,7 @@ const updateUser = async (idUser, body) => {
         const result = await connection.query(query);
         let data = result.rows[0];
 
-        return data ? camel(data) : null;
+        return await getById(data.id);
     } catch (error) {
         console.log(error);
         throw { error };
