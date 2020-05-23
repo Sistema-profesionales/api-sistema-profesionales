@@ -379,7 +379,7 @@ const updateUser = async (idUser, body) => {
             queryToUpdate = ` SET entity_id = '${body.entityId}' `;
         }
 
-        if (body.hasOwnProperty('commune_id')) {
+        if (body.hasOwnProperty('communeId')) {
             queryToUpdate = ` SET commune_id = '${body.communeId}' `;
         }
 
