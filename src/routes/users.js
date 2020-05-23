@@ -342,6 +342,24 @@ router.post('/validateUser', async (req, res) => {
     }
 });
 
+/** Check if email exists  */
+router.post('/checkIfEmailExists', async (req, res) => {
+    try {
+        const { body } = req;
+
+        const checkEmail = await userModel.checkIfEmailExist(body);
+
+        if (checkEmail) {
+            res.status(409).send("El correo ya se encuentra registrado");
+        } else {
+            res.status(200).send("El correo no se encuentra registrado");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
 /**
  * Elimina usuario por id
  */

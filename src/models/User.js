@@ -360,6 +360,7 @@ const getUserWithFilter = async (body, page, usersCount) => {
     }
 }
 
+
 const updateUser = async (idUser, body) => {
     const connection = await connecting();
     try {
