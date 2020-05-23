@@ -271,26 +271,28 @@ router.post('/', async (req, res) => {
             }
         }
 
-        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-        const page = await browser.newPage();
-        await page.goto(urlOfCert);
+        if (!body.entityId) {
+            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            const page = await browser.newPage();
+            await page.goto(urlOfCert);
 
 
-        if (!fs.existsSync('./src/docs')) {
-            fs.mkdirSync('./src/docs');
-            console.log("folder creada");
+            if (!fs.existsSync('./src/docs')) {
+                fs.mkdirSync('./src/docs');
+                console.log("folder creada");
+            }
+
+            if (!fs.existsSync(`./src/docs/${body.rut}`)) {
+                fs.mkdirSync(`./src/docs/${body.rut}`);
+                console.log("folder creada 2");
+            }
+
+            await page.setViewport({
+                width: 750,
+                height: 780,
+            });
+            await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion.png` });
         }
-
-        if (!fs.existsSync(`./src/docs/${body.rut}`)) {
-            fs.mkdirSync(`./src/docs/${body.rut}`);
-            console.log("folder creada 2");
-        }
-
-        await page.setViewport({
-            width: 750,
-            height: 780,
-        });
-        await page.screenshot({ path: `./src//docs/${body.rut}/certificado_inscripcion.png` });
 
 
         try {
