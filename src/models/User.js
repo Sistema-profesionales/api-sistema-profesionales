@@ -365,48 +365,80 @@ const updateUser = async (idUser, body) => {
     const connection = await connecting();
     try {
 
-        let queryToUpdate = "";
+        let queryToUpdate = " SET ";
 
         if (body.hasOwnProperty('names')) {
-            queryToUpdate = ` SET names = '${body.names}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` names = '${body.names}' `;
+            } else {
+                queryToUpdate += ` ,names = '${body.names}' `;
+            }
         }
 
         if (body.hasOwnProperty('lastNames')) {
-            queryToUpdate = ` SET last_names = '${body.lastNames}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` last_names = '${body.lastNames}' `;
+            } else {
+                queryToUpdate += ` ,last_names = '${body.lastNames}' `;
+            }
         }
 
         if (body.hasOwnProperty('entityId')) {
-            queryToUpdate = ` SET entity_id = '${body.entityId}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` entity_id = '${body.entityId}' `;
+            } else {
+                queryToUpdate += ` ,entity_id = '${body.entityId}' `;
+            }
         }
 
         if (body.hasOwnProperty('communeId')) {
-            queryToUpdate = ` SET commune_id = '${body.communeId}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` commune_id = '${body.communeId}' `;
+            } else {
+                queryToUpdate += ` ,commune_id = '${body.communeId}' `;
+            }
         }
 
         if (body.hasOwnProperty('phone')) {
-            queryToUpdate = ` SET phone = '${body.phone}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` phone = '${body.phone}' `;
+            } else {
+                queryToUpdate += ` ,phone = '${body.phone}' `;
+            }
         }
 
         if (body.hasOwnProperty('email')) {
-            queryToUpdate = ` SET email = '${body.email}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` email = '${body.email}' `;
+            } else {
+                queryToUpdate += ` ,email = '${body.email}' `;
+            }
         }
 
         if (body.hasOwnProperty('premium')) {
-            queryToUpdate = ` SET premium = '${body.premium}' `;
+            if (queryToUpdate == " SET ") {
+                queryToUpdate += ` premium = '${body.premium}' `;
+            } else {
+                queryToUpdate += ` ,premium = '${body.premium}' `;
+            }
         }
 
-        const query = `UPDATE users 
-                       ${queryToUpdate}
-                       WHERE id = ${idUser}
-                       RETURNING *`;
 
+        const query = `UPDATE users 
+                        ${queryToUpdate}
+                        WHERE id = ${idUser}
+                        RETURNING *`;
+
+        console.log(query);
 
         const result = await connection.query(query);
         let data = result.rows[0];
 
         return data ? camel(data) : null;
     } catch (error) {
+        console.log(error);
         throw { error };
+
     } finally {
         connection.release();
     }

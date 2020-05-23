@@ -230,6 +230,7 @@ router.post('/checkData', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         let { body } = req;
+        //here i am
         const errors = validatorUser.save(body);
 
 
@@ -418,6 +419,8 @@ router.put('/:id', async (req, res) => {
         if (!user) return res.status(404).send({ "user": [`El usuario con id ${idUser} no existe`] });
 
         const { body } = req;
+
+        const errors = validatorUser.save(body);
 
         const userUpdated = await userModel.updateUser(idUser, body);
 
